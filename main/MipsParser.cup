@@ -1,0 +1,42 @@
+/* Ejemplo muy básico de gramática CUP para instrucciones MIPS */
+
+import java.util.List;
+import java.util.ArrayList;
+
+parser code {:
+
+  private List<Instruction> instructionList = new ArrayList<>();
+
+  public List<Instruction> getInstructionList() {
+    return instructionList;
+  }
+
+  // Método para agregar una nueva instrucción a la lista
+  private void addInstruction(String opcode, String line, List<String> readRegisters, List<String> writeRegisters) {
+    Instruction instruction = new Instruction(opcode, line, readRegisters, writeRegisters);
+    instructionList.add(instruction);
+  }
+
+:}
+
+/* Definición de la gramática */
+
+start with instructionList;
+
+instructionList ::= instructionList:i instruction:instr
+{
+  i.add(instr);
+};
+
+instruction ::= opcode:op line:ln readRegisters:reads writeRegisters:writes ';'
+{
+  addInstruction(op, ln, reads, writes);
+};
+
+opcode ::= /* definición de los opcodes */;
+line ::= /* definición de las líneas */;
+readRegisters ::= /* definición de los registros leídos */;
+writeRegisters ::= /* definición de los registros escritos */;
+
+/* Reglas para cada componente podrían ser más complejas según tus necesidades */
+
