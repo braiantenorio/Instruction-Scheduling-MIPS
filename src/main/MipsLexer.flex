@@ -43,6 +43,13 @@ I_MEM_INSTRUCTION = ("lw"|"sw"|"lh"|"sh"|"lb"|"sb")
  /* Jump instructions */
 J_INSTRUCTION = ("j"|"jal")
 
+
+ /* Pseudo instructions */
+PS_INSTRUCTION = ("li"|"la"|"seq"|"sge"|"sgt"|"sle"|"sne"|"beqz"|"bnez"|"bge"|"bgt"|"ble")
+
+/* Labels */
+LABEL = [a-zA-Z_][a-zA-Z_0-9]*
+
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
@@ -59,13 +66,24 @@ EndOfLineComment     = "#" {InputCharacter}* {LineTerminator}?
     {J_INSTRUCTION}		{ return symbol(JOPCODE, yytext()); }
     {I_INSTRUCTION}		{ return symbol(IOPCODE, yytext()); }
     {I_MEM_INSTRUCTION}	{ return symbol(IMOPCODE, yytext()); }
+    {PS_INSTRUCTION}	{ return symbol(PSOPCODE, yytext()); }
+    
 
     {REGISTER}	{ return symbol(REGISTER, yytext()); }
     {IMMEDIATE}	{ return symbol(IMMEDIATE, yytext()); }
+
+    {LABEL}      { return symbol(LABEL, yytext()); }
+
+    .word        { return symbol(WORD_TYPE); }
+    .space       { return symbol(SPACE_TYPE); }
+
     
     {EndOfLineComment}                   { /* ignore */ }
 
     {WhiteSpace}                   { /* ignore */ }
+
+    \.text       { return symbol(TEXT_SECTION); }
+    \.data       { return symbol(DATA_SECTION); }
 
     \(						{ return symbol(OBRACKET, yytext()); }
     \)						{ return symbol(CBRACKET, yytext()); }

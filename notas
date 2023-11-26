@@ -9,3 +9,9 @@ y que el Result de eso sea un objeto Instruction
 
 proximos pasos:
 probar el lexer, aun que sea con un codigo normalito
+
+
+
+ideas:
+la gramatica podria empezar y ser una secuencia de bloques basicos.
+Creo que puede funcionar

@@ -35,12 +35,13 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\0\1\37\1\43\1\0\1\36\22\0\1\0\2\0\1\40"+
-    "\1\1\3\0\1\41\1\42\1\0\1\21\1\0\1\21\2\0\1\20"+
-    "\1\14\2\15\4\17\2\16\47\0\1\6\1\24\1\0\1\22\1\3"+
-    "\1\10\1\10\1\34\1\27\1\35\1\13\1\26\1\25\1\31\1\5"+
-    "\1\11\1\33\1\4\1\12\1\7\1\23\1\30\1\34\1\32\1\0"+
-    "\1\2\12\0\1\43\u1fa2\0\1\43\1\43\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\11\0\1\0\1\40\1\45\1\0\1\37\22\0\1\0\2\0\1\41"+
+    "\1\1\3\0\1\43\1\44\1\0\1\21\1\0\1\21\1\42\1\0"+
+    "\1\20\1\14\2\15\4\17\2\16\7\0\32\36\4\0\1\36\1\0"+
+    "\1\6\1\24\1\36\1\22\1\3\1\10\1\10\1\34\1\27\1\35"+
+    "\1\13\1\26\1\25\1\31\1\5\1\11\1\33\1\4\1\12\1\7"+
+    "\1\23\1\30\1\34\1\32\1\36\1\2\12\0\1\45\u1fa2\0\1\45"+
+    "\1\45\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -53,12 +54,12 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\5\1\2\2\7\1\1\3\2\1\1\4\1\5"+
-    "\1\6\7\0\1\7\3\0\1\10\11\0\1\11\1\12"+
-    "\1\7\1\3\1\0";
+    "\1\0\2\1\4\2\2\3\1\1\6\2\1\4\3\1"+
+    "\1\5\1\6\1\7\7\0\1\10\3\2\1\11\7\2"+
+    "\3\0\1\12\1\13\1\10\1\4\5\0\1\14\1\15";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[47];
+    int [] result = new int[56];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -83,15 +84,16 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\44\0\110\0\154\0\220\0\264\0\330\0\44"+
-    "\0\374\0\u0120\0\u0144\0\u0168\0\u018c\0\u01b0\0\u01d4\0\u01f8"+
-    "\0\u021c\0\u0240\0\44\0\44\0\44\0\u0264\0\u0288\0\u02ac"+
-    "\0\u02d0\0\u02f4\0\u0318\0\u033c\0\u0360\0\u0384\0\u03a8\0\u03cc"+
-    "\0\44\0\u03f0\0\u0414\0\u0438\0\u045c\0\u0480\0\u04a4\0\154"+
-    "\0\u04c8\0\u04ec\0\44\0\44\0\44\0\44\0\u0510";
+    "\0\0\0\46\0\114\0\162\0\230\0\276\0\344\0\u010a"+
+    "\0\46\0\u0130\0\u0156\0\u017c\0\u01a2\0\u01c8\0\u01ee\0\u0214"+
+    "\0\u023a\0\u0260\0\u0286\0\u02ac\0\46\0\46\0\46\0\u02d2"+
+    "\0\u02f8\0\u031e\0\u0344\0\u036a\0\u0390\0\u03b6\0\u03dc\0\u0402"+
+    "\0\u0428\0\u044e\0\162\0\u0474\0\u049a\0\u04c0\0\u04e6\0\u050c"+
+    "\0\u0532\0\u0558\0\u057e\0\u05a4\0\u05ca\0\46\0\162\0\162"+
+    "\0\162\0\u05f0\0\u0616\0\u063c\0\u0662\0\u0688\0\46\0\46";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[47];
+    int [] result = new int[56];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -114,27 +116,40 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\2\1\3\3\2\1\4\1\5\3\2\1\6\1\2"+
-    "\4\7\1\10\1\11\1\12\1\2\1\13\1\14\1\15"+
-    "\2\2\1\16\1\17\2\2\1\20\1\21\1\2\1\22"+
-    "\1\23\1\24\1\25\46\0\1\26\1\0\1\27\1\0"+
-    "\1\30\1\31\1\32\1\0\1\33\1\34\14\0\1\34"+
-    "\17\0\1\35\61\0\1\36\6\0\1\36\16\0\1\37"+
-    "\16\0\1\40\1\41\1\0\1\42\5\0\1\41\23\0"+
-    "\5\7\37\0\4\7\53\0\1\43\17\0\1\44\25\0"+
-    "\1\45\35\0\1\46\44\0\1\41\7\0\1\41\14\0"+
-    "\1\47\43\0\1\50\44\0\1\51\74\0\1\2\4\0"+
-    "\36\22\1\21\1\2\4\22\3\0\1\52\46\0\1\53"+
-    "\44\0\1\53\4\0\2\53\2\0\1\53\37\0\5\53"+
-    "\34\0\1\53\43\0\1\53\2\0\2\53\1\0\2\53"+
-    "\37\0\1\53\3\0\1\53\52\0\1\54\36\0\1\35"+
-    "\27\0\1\55\17\0\1\55\41\0\1\35\26\0\1\55"+
-    "\16\0\1\55\45\0\1\55\46\0\1\54\13\0\1\44"+
-    "\66\0\1\55\21\0\1\55\65\0\1\56\21\0\1\57"+
-    "\44\0\1\53\36\0";
+    "\1\2\1\3\3\4\1\5\1\6\3\4\1\7\1\4"+
+    "\4\10\1\11\1\12\1\13\1\4\1\14\1\15\1\16"+
+    "\2\4\1\17\1\20\2\4\1\21\1\4\1\22\1\2"+
+    "\1\23\1\24\1\25\1\26\1\27\50\0\1\30\1\0"+
+    "\1\31\1\0\1\32\1\33\1\34\1\0\1\35\1\36"+
+    "\14\0\1\36\17\0\17\4\1\0\15\4\11\0\2\4"+
+    "\1\37\14\4\1\0\15\4\11\0\17\4\1\0\1\40"+
+    "\6\4\1\40\5\4\11\0\2\4\1\41\14\4\1\0"+
+    "\1\4\1\42\1\43\1\4\1\44\5\4\1\43\2\4"+
+    "\23\0\5\10\41\0\4\10\30\0\17\4\1\0\5\4"+
+    "\1\45\7\4\11\0\1\4\1\46\15\4\1\0\7\4"+
+    "\1\47\5\4\11\0\17\4\1\0\1\4\1\50\13\4"+
+    "\11\0\17\4\1\0\2\4\1\43\7\4\1\43\2\4"+
+    "\11\0\3\4\1\51\13\4\1\0\15\4\11\0\3\4"+
+    "\1\5\13\4\1\0\15\4\11\0\4\4\1\52\12\4"+
+    "\1\0\15\4\47\0\1\2\5\0\37\23\1\22\1\2"+
+    "\5\23\7\0\1\53\12\0\1\54\26\0\1\55\50\0"+
+    "\1\56\46\0\1\56\4\0\2\56\2\0\1\56\41\0"+
+    "\5\56\36\0\1\56\45\0\1\56\2\0\2\56\1\0"+
+    "\2\56\41\0\1\56\3\0\1\56\27\0\17\4\1\0"+
+    "\5\4\1\57\7\4\11\0\17\4\1\0\1\37\14\4"+
+    "\11\0\4\4\1\60\12\4\1\0\4\4\1\60\10\4"+
+    "\11\0\17\4\1\0\2\4\1\37\12\4\11\0\5\4"+
+    "\1\60\11\4\1\0\4\4\1\60\10\4\11\0\17\4"+
+    "\1\0\6\4\1\60\6\4\11\0\17\4\1\0\11\4"+
+    "\1\57\3\4\11\0\1\4\1\46\15\4\1\0\15\4"+
+    "\11\0\17\4\1\0\4\4\1\60\10\4\11\0\2\4"+
+    "\1\60\14\4\1\0\15\4\11\0\17\4\1\0\4\4"+
+    "\1\61\10\4\12\0\1\62\50\0\1\63\43\0\1\64"+
+    "\73\0\1\65\22\0\1\66\43\0\1\56\47\0\1\67"+
+    "\44\0\1\70\37\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[1332];
+    int [] result = new int[1710];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -172,11 +187,11 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\1\11\5\1\1\11\12\1\3\11\7\0\1\1"+
-    "\3\0\1\11\11\0\4\11\1\0";
+    "\1\0\1\11\6\1\1\11\13\1\3\11\7\0\14\1"+
+    "\3\0\1\11\3\1\5\0\2\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[47];
+    int [] result = new int[56];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -283,7 +298,7 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 146) {
+    while (i < 156) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);
@@ -650,52 +665,67 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
             { /* ignore */
             } 
             // fall through
-          case 11: break;
-          case 2: 
-            { return symbol(IMMEDIATE, yytext());
-            } 
-            // fall through
-          case 12: break;
-          case 3: 
-            { return symbol(JOPCODE, yytext());
-            } 
-            // fall through
-          case 13: break;
-          case 4: 
-            { return symbol(OBRACKET, yytext());
-            } 
-            // fall through
           case 14: break;
-          case 5: 
-            { return symbol(CBRACKET, yytext());
+          case 2: 
+            { return symbol(LABEL, yytext());
             } 
             // fall through
           case 15: break;
-          case 6: 
-            { throw new Error("Illegal character <"+yytext()+">");
+          case 3: 
+            { return symbol(IMMEDIATE, yytext());
             } 
             // fall through
           case 16: break;
-          case 7: 
-            { return symbol(ROPCODE, yytext());
+          case 4: 
+            { return symbol(JOPCODE, yytext());
             } 
             // fall through
           case 17: break;
-          case 8: 
-            { return symbol(IMOPCODE, yytext());
+          case 5: 
+            { return symbol(OBRACKET, yytext());
             } 
             // fall through
           case 18: break;
-          case 9: 
-            { return symbol(REGISTER, yytext());
+          case 6: 
+            { return symbol(CBRACKET, yytext());
             } 
             // fall through
           case 19: break;
-          case 10: 
-            { return symbol(IOPCODE, yytext());
+          case 7: 
+            { throw new Error("Illegal character <"+yytext()+">");
             } 
             // fall through
           case 20: break;
+          case 8: 
+            { return symbol(ROPCODE, yytext());
+            } 
+            // fall through
+          case 21: break;
+          case 9: 
+            { return symbol(IMOPCODE, yytext());
+            } 
+            // fall through
+          case 22: break;
+          case 10: 
+            { return symbol(REGISTER, yytext());
+            } 
+            // fall through
+          case 23: break;
+          case 11: 
+            { return symbol(IOPCODE, yytext());
+            } 
+            // fall through
+          case 24: break;
+          case 12: 
+            { return symbol(TEXT_SECTION);
+            } 
+            // fall through
+          case 25: break;
+          case 13: 
+            { return symbol(DATA_SECTION);
+            } 
+            // fall through
+          case 26: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
