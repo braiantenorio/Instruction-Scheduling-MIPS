@@ -1,24 +1,47 @@
 
 package main;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.StringReader;
+import java.util.Objects;
+
+import java_cup.runtime.Symbol;
 
 public class Main {
-    public static void main(String[] args) {
-        String assemblyCode = "lw $1, 0($0)\nadd $2, $2, $1\n"; //este deberia ser el file de assembler xd
-
-        MipsLexer lexer = new MipsLexer(new StringReader(assemblyCode));
+    public static void main(String[] args) throws IOException {
+        File inputFile = openFile("src/main/ejemplo.asm");
 
         try {
-            while (true) {
-                String token = lexer.next_token().toString(); //cambiar
-                if (token == null) break;
 
-                // Aquí puedes procesar el token según sea necesario
-                System.out.println("Token: " + token);
+            MipsLexer lexer = new MipsLexer(new FileReader(inputFile.getPath()));
+
+            while (true) {
+                Symbol token = lexer.next_token();
+                if (token.sym == MipsLexer.YYEOF || token.sym == MipsLexer.EOF) {
+                    break;
+                }
+            
+                // Imprimir información sobre el token, incluyendo yytext()
+                System.out.println("Token: " + MipsLexer.terminalNames[token.sym] + " - " + token.value + " - " + lexer.yytext());
             }
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
+
+    private static File openFile(String pathName) throws IOException {
+        String path = pathName;
+        File file = new File("/home/braian/instructionScheduling/" + path);
+        if (!file.isFile()) {
+            throw new FileNotFoundException(path);
+        }
+        return file;
+    }
+
 }

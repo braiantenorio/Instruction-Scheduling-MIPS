@@ -43,20 +43,33 @@ I_MEM_INSTRUCTION = ("lw"|"sw"|"lh"|"sh"|"lb"|"sb")
  /* Jump instructions */
 J_INSTRUCTION = ("j"|"jal")
 
+LineTerminator = \r|\n|\r\n
+InputCharacter = [^\r\n]
+WhiteSpace     = {LineTerminator} | [ \t\f]
+
+EndOfLineComment     = "#" {InputCharacter}* {LineTerminator}?
+
 %%
 
 // Keywords
 
-^{R_INSTRUCTION}		{ return symbol(ROPCODE, yytext()); }
-^{J_INSTRUCTION}		{ return symbol(JOPCODE, yytext()); }
-^{I_INSTRUCTION}		{ return symbol(IOPCODE, yytext()); }
-^{I_MEM_INSTRUCTION}	{ return symbol(IMOPCODE, yytext()); }
+<YYINITIAL> {
 
-{REGISTER}	{ return symbol(REGISTER, yytext()); }
-{IMMEDIATE}	{ return symbol(IMMEDIATE, yytext()); }
+    {R_INSTRUCTION}		{ return symbol(ROPCODE, yytext()); }
+    {J_INSTRUCTION}		{ return symbol(JOPCODE, yytext()); }
+    {I_INSTRUCTION}		{ return symbol(IOPCODE, yytext()); }
+    {I_MEM_INSTRUCTION}	{ return symbol(IMOPCODE, yytext()); }
 
-\n 						{ return symbol(EOL); }
-[ \t]+					{ /* Ignoring whitespaces and tabs */ }
-\(						{ return symbol(OBRACKET, yytext()); }
-\)						{ return symbol(CBRACKET, yytext()); }
-.						{ /* manage errors bitch */ }
+    {REGISTER}	{ return symbol(REGISTER, yytext()); }
+    {IMMEDIATE}	{ return symbol(IMMEDIATE, yytext()); }
+    
+    {EndOfLineComment}                   { /* ignore */ }
+
+    {WhiteSpace}                   { /* ignore */ }
+
+    \(						{ return symbol(OBRACKET, yytext()); }
+    \)						{ return symbol(CBRACKET, yytext()); }
+    .                       { /* ignore */ }
+}
+
+[^]                    { throw new Error("Illegal character <"+yytext()+">"); }
