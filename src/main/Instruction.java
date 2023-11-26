@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Instruction {
-    private String opcode; // Opcode de la instrucción
-    private String line; // Línea de código completa
-    private List<String> readRegisters; // Registros leídos por la instrucción
-    private List<String> writeRegisters; // Registros escritos por la instrucción
+    private String opcode;
+    private String line; 
+    private List<String> readRegisters; 
+    private List<String> writeRegisters; 
 
     public Instruction(String opcode, String line, List<String> readRegisters, List<String> writeRegisters) {
         this.opcode = opcode;
@@ -15,6 +15,13 @@ public class Instruction {
         this.readRegisters = readRegisters;
         this.writeRegisters = writeRegisters;
     }
+
+    public Instruction(String opcode) {
+        this.opcode = opcode;
+        this.readRegisters = new ArrayList<>();
+        this.writeRegisters = new ArrayList<>();
+    }
+
 
     public String getOpcode() {
         return opcode;
@@ -46,6 +53,14 @@ public class Instruction {
 
     public void setWriteRegisters(List<String> writeRegisters) {
         this.writeRegisters = writeRegisters;
+    }
+
+    public void addWriteRegister(String writeRegister){
+        this.writeRegisters.add(writeRegister);
+    }
+
+    public void addReadRegister(String readRegister){
+        this.readRegisters.add(readRegister);
     }
 
 }

@@ -21,31 +21,56 @@ parser code {:
 :}
 
 terminal ROPCODE; 
-terminal JOPCODE; 
 terminal IOPCODE;
 terminal IMOPCODE; 
+terminal JOPCODE; 
 terminal REGISTER; 
 terminal IMMEDIATE; 
 terminal OBRACKET; 
 terminal CBRACKET;
-terminal EOL; // tal vez lo tratamos distinto despues 
+terminal EOL; // tal vez lo tratamos distinto despues. En realidad podriamos ignorarlos y tambien ignorar los comentarios
+// En cuanto a las labels, estas podrian ser opcionales de todas las instrucciones, 
+//tal vez tambien deberiamos diferenciar labels de Immediate
+
+non terminal instruction;
 
 
-non terminal test;
 
 
-/* Definición de la gramática */
+start with instruction;
 
 
-
-start with test;
-
-
-test ::=        ROPCODE
-          |	    JOPCODE
-          ;
-
-
+instruction ::= ROPCODE:opcode REGISTER:rd REGISTER:rs REGISTER:rt
+                {: 
+                  Instruction i = new Instruction(opcode);
+                  i.addWriteRegister(rd);
+                  i.addReadRegister(rs);
+                  i.addReadRegister(rt);
+                  RESULT = i; 
+                :} 
+                |	    
+                IOPCODE:opcode REGISTER:rt REGISTER:rs IMMEDIATE
+                {: 
+                  Instruction i = new Instruction(opcode);
+                  i.addWriteRegister(rt);
+                  i.addReadRegister(rs);
+                  RESULT = i; 
+                :}
+                |
+                IMOPCODE:opcode REGISTER:rt IMMEDIATE OBRACKET REGISTER:rs CBRACKET
+                {:
+                  Instruction i = new Instruction(opcode);
+                  i.addWriteRegister(rt);
+                  i.addReadRegister(rs);
+                  RESULT = i; 
+                :}
+                |
+                JOPCODE:opcode REGISTER //por ahora creo que no funcionaria, hay que agregar un tipo que sea label?
+                {:
+                  Instruction i = new Instruction(opcode);
+                  RESULT = i; 
+                :}
+                ;
 
 /*
 instructionList ::= instructionList:i instruction:instr

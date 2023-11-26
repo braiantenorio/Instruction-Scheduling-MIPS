@@ -55,7 +55,7 @@ J_INSTRUCTION = ("j"|"jal")
 {REGISTER}	{ return symbol(REGISTER, yytext()); }
 {IMMEDIATE}	{ return symbol(IMMEDIATE, yytext()); }
 
-\n 						{ return EOL; }
+\n 						{ return symbol(EOL); }
 [ \t]+					{ /* Ignoring whitespaces and tabs */ }
 \(						{ return symbol(OBRACKET, yytext()); }
 \)						{ return symbol(CBRACKET, yytext()); }
