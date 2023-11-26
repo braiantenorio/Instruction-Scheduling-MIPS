@@ -33,13 +33,20 @@ terminal EOL; // tal vez lo tratamos distinto despues. En realidad podriamos ign
 //tal vez tambien deberiamos diferenciar labels de Immediate
 
 non terminal instruction;
+non terminal instructionList;
 
+start with instructionList;
 
-
-
-start with instruction;
-
-
+instructionList ::= instructionList:i instruction:instr
+                    {:
+                      i.add(instr);
+                      RESULT = i;
+                    :}
+                    | /* Empty */
+                    {:
+                      RESULT = new ArrayList<Instruction>();
+                    :}
+                    ;
 instruction ::= ROPCODE:opcode REGISTER:rd REGISTER:rs REGISTER:rt
                 {: 
                   Instruction i = new Instruction(opcode);
@@ -71,15 +78,3 @@ instruction ::= ROPCODE:opcode REGISTER:rd REGISTER:rs REGISTER:rt
                   RESULT = i; 
                 :}
                 ;
-
-/*
-instructionList ::= instructionList:i instruction:instr
-{
-  i.add(instr);
-};
-
-instruction ::= opcode:op line:ln readRegisters:reads writeRegisters:writes ';'
-{
-  addInstruction(op, ln, reads, writes);
-};
-*/

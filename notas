@@ -5,3 +5,7 @@ Creo que hay que poner yytext, y luego los codigo como ROPCODE se forman con el 
 
 Podemos armar la gramatica en cup, por ejemplo R_INSTRUCTION, Register, Register
 y que el Result de eso sea un objeto Instruction
+
+
+proximos pasos:
+probar el lexer, aun que sea con un codigo normalito
