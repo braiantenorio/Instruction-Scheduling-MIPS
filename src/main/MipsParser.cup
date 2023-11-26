@@ -1,7 +1,8 @@
-/* Ejemplo muy básico de gramática CUP para instrucciones MIPS */
 
 import java.util.List;
 import java.util.ArrayList;
+import java_cup.runtime.*;
+
 
 parser code {:
 
@@ -19,10 +20,34 @@ parser code {:
 
 :}
 
+terminal ROPCODE; 
+terminal JOPCODE; 
+terminal IOPCODE;
+terminal IMOPCODE; 
+terminal REGISTER; 
+terminal IMMEDIATE; 
+terminal OBRACKET; 
+terminal CBRACKET;
+terminal EOL; // tal vez lo tratamos distinto despues 
+
+
+non terminal test;
+
+
 /* Definición de la gramática */
 
-start with instructionList;
 
+
+start with test;
+
+
+test ::=        ROPCODE
+          |	    JOPCODE
+          ;
+
+
+
+/*
 instructionList ::= instructionList:i instruction:instr
 {
   i.add(instr);
@@ -32,11 +57,4 @@ instruction ::= opcode:op line:ln readRegisters:reads writeRegisters:writes ';'
 {
   addInstruction(op, ln, reads, writes);
 };
-
-opcode ::= /* definición de los opcodes */;
-line ::= /* definición de las líneas */;
-readRegisters ::= /* definición de los registros leídos */;
-writeRegisters ::= /* definición de los registros escritos */;
-
-/* Reglas para cada componente podrían ser más complejas según tus necesidades */
-
+*/

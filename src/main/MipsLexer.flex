@@ -4,7 +4,9 @@ import java_cup.runtime.*;
 
 %%
 
+%public
 %class MipsLexer
+%implements sym
 %unicode
 %cup
 %line
@@ -45,16 +47,16 @@ J_INSTRUCTION = ("j"|"jal")
 
 // Keywords
 
-^{R_INSTRUCTION}		{ return symbol(ROPCODE, yytext); }
-^{J_INSTRUCTION}		{ return symbol(JOPCODE, yytext); }
-^{I_INSTRUCTION}		{ return symbol(IOPCODE, yytext); }
-^{I_MEM_INSTRUCTION}	{ return symbol(IMOPCODE, yytext); }
+^{R_INSTRUCTION}		{ return symbol(ROPCODE, yytext()); }
+^{J_INSTRUCTION}		{ return symbol(JOPCODE, yytext()); }
+^{I_INSTRUCTION}		{ return symbol(IOPCODE, yytext()); }
+^{I_MEM_INSTRUCTION}	{ return symbol(IMOPCODE, yytext()); }
 
-{REGISTER}	{ return symbol(REGISTER, yytext); }
-{IMMEDIATE}	{ return symbol(IMMEDIATE, yytext); }
+{REGISTER}	{ return symbol(REGISTER, yytext()); }
+{IMMEDIATE}	{ return symbol(IMMEDIATE, yytext()); }
 
 \n 						{ return EOL; }
 [ \t]+					{ /* Ignoring whitespaces and tabs */ }
-\(						{ return symbol(OBRACKET, yytext); }
-\)						{ return symbol(CBRACKET, yytext); }
+\(						{ return symbol(OBRACKET, yytext()); }
+\)						{ return symbol(CBRACKET, yytext()); }
 .						{ /* manage errors bitch */ }
