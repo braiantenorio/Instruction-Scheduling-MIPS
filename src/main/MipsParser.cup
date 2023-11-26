@@ -23,7 +23,8 @@ parser code {:
 terminal ROPCODE; 
 terminal IOPCODE;
 terminal IMOPCODE; 
-terminal JOPCODE; 
+terminal JOPCODE;
+terminal PSOPCODE; 
 terminal REGISTER; 
 terminal IMMEDIATE; 
 terminal OBRACKET; 
@@ -31,8 +32,7 @@ terminal CBRACKET;
 terminal LABEL;
 terminal DATA_SECTION;
 terminal TEXT_SECTION;
-terminal WORD_TYPE;
-terminal SPACE_TYPE;
+terminal DATA_TYPE;
 terminal EOL; // tal vez lo tratamos distinto despues. En realidad podriamos ignorarlos y tambien ignorar los comentarios
 // En cuanto a las labels, estas podrian ser opcionales de todas las instrucciones, 
 //tal vez tambien deberiamos diferenciar labels de Immediate

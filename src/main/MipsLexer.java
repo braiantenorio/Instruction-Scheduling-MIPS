@@ -35,13 +35,13 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\0\1\40\1\45\1\0\1\37\22\0\1\0\2\0\1\41"+
-    "\1\1\3\0\1\43\1\44\1\0\1\21\1\0\1\21\1\42\1\0"+
-    "\1\20\1\14\2\15\4\17\2\16\7\0\32\36\4\0\1\36\1\0"+
-    "\1\6\1\24\1\36\1\22\1\3\1\10\1\10\1\34\1\27\1\35"+
-    "\1\13\1\26\1\25\1\31\1\5\1\11\1\33\1\4\1\12\1\7"+
-    "\1\23\1\30\1\34\1\32\1\36\1\2\12\0\1\45\u1fa2\0\1\45"+
-    "\1\45\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\11\0\1\0\1\42\1\44\1\45\1\41\22\0\1\0\2\0\1\43"+
+    "\1\1\3\0\1\50\1\51\1\0\1\22\1\0\1\22\1\47\1\0"+
+    "\1\21\1\15\2\16\4\20\2\17\7\0\32\40\4\0\1\40\1\0"+
+    "\1\6\1\25\1\46\1\23\1\3\1\13\1\10\1\36\1\30\1\37"+
+    "\1\14\1\27\1\26\1\32\1\5\1\11\1\34\1\4\1\12\1\7"+
+    "\1\24\1\31\1\35\1\33\1\40\1\2\12\0\1\44\u1fa2\0\1\44"+
+    "\1\44\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -55,11 +55,13 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\0\2\1\4\2\2\3\1\1\6\2\1\4\3\1"+
-    "\1\5\1\6\1\7\7\0\1\10\3\2\1\11\7\2"+
-    "\3\0\1\12\1\13\1\10\1\4\5\0\1\14\1\15";
+    "\1\5\1\1\1\6\1\7\11\0\1\10\5\2\1\11"+
+    "\2\2\1\3\4\2\1\12\2\2\3\1\5\0\2\13"+
+    "\1\14\1\10\1\14\1\2\1\4\2\1\5\0\2\1"+
+    "\3\0\1\15\1\1\1\15\1\16\1\17\2\20";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[56];
+    int [] result = new int[84];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -84,16 +86,20 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\46\0\114\0\162\0\230\0\276\0\344\0\u010a"+
-    "\0\46\0\u0130\0\u0156\0\u017c\0\u01a2\0\u01c8\0\u01ee\0\u0214"+
-    "\0\u023a\0\u0260\0\u0286\0\u02ac\0\46\0\46\0\46\0\u02d2"+
-    "\0\u02f8\0\u031e\0\u0344\0\u036a\0\u0390\0\u03b6\0\u03dc\0\u0402"+
-    "\0\u0428\0\u044e\0\162\0\u0474\0\u049a\0\u04c0\0\u04e6\0\u050c"+
-    "\0\u0532\0\u0558\0\u057e\0\u05a4\0\u05ca\0\46\0\162\0\162"+
-    "\0\162\0\u05f0\0\u0616\0\u063c\0\u0662\0\u0688\0\46\0\46";
+    "\0\0\0\52\0\124\0\176\0\250\0\322\0\374\0\u0126"+
+    "\0\52\0\u0150\0\u017a\0\u01a4\0\u01ce\0\u01f8\0\u0222\0\u024c"+
+    "\0\u0276\0\u02a0\0\u02ca\0\u02f4\0\u02ca\0\u031e\0\52\0\52"+
+    "\0\u0348\0\u0372\0\u039c\0\u03c6\0\u03f0\0\u041a\0\u0444\0\u046e"+
+    "\0\u0498\0\u04c2\0\u04ec\0\u0516\0\u0540\0\u056a\0\u0594\0\176"+
+    "\0\u05be\0\u05e8\0\u0612\0\u063c\0\u0666\0\u0690\0\u06ba\0\176"+
+    "\0\u06e4\0\u070e\0\u0738\0\u0762\0\u078c\0\u07b6\0\u07e0\0\u080a"+
+    "\0\u0834\0\u085e\0\u02ca\0\u080a\0\176\0\176\0\u0888\0\u08b2"+
+    "\0\176\0\u08dc\0\u0906\0\u0930\0\u095a\0\u0984\0\u09ae\0\u09d8"+
+    "\0\u0a02\0\u0a2c\0\u0a56\0\u0a80\0\u0aaa\0\u02ca\0\u0ad4\0\u0738"+
+    "\0\u02ca\0\u02ca\0\u02ca\0\u0738";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[56];
+    int [] result = new int[84];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -116,40 +122,63 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\2\1\3\3\4\1\5\1\6\3\4\1\7\1\4"+
+    "\1\2\1\3\3\4\1\5\1\6\3\4\1\7\2\4"+
     "\4\10\1\11\1\12\1\13\1\4\1\14\1\15\1\16"+
-    "\2\4\1\17\1\20\2\4\1\21\1\4\1\22\1\2"+
-    "\1\23\1\24\1\25\1\26\1\27\50\0\1\30\1\0"+
-    "\1\31\1\0\1\32\1\33\1\34\1\0\1\35\1\36"+
-    "\14\0\1\36\17\0\17\4\1\0\15\4\11\0\2\4"+
-    "\1\37\14\4\1\0\15\4\11\0\17\4\1\0\1\40"+
-    "\6\4\1\40\5\4\11\0\2\4\1\41\14\4\1\0"+
-    "\1\4\1\42\1\43\1\4\1\44\5\4\1\43\2\4"+
-    "\23\0\5\10\41\0\4\10\30\0\17\4\1\0\5\4"+
-    "\1\45\7\4\11\0\1\4\1\46\15\4\1\0\7\4"+
-    "\1\47\5\4\11\0\17\4\1\0\1\4\1\50\13\4"+
-    "\11\0\17\4\1\0\2\4\1\43\7\4\1\43\2\4"+
-    "\11\0\3\4\1\51\13\4\1\0\15\4\11\0\3\4"+
-    "\1\5\13\4\1\0\15\4\11\0\4\4\1\52\12\4"+
-    "\1\0\15\4\47\0\1\2\5\0\37\23\1\22\1\2"+
-    "\5\23\7\0\1\53\12\0\1\54\26\0\1\55\50\0"+
-    "\1\56\46\0\1\56\4\0\2\56\2\0\1\56\41\0"+
-    "\5\56\36\0\1\56\45\0\1\56\2\0\2\56\1\0"+
-    "\2\56\41\0\1\56\3\0\1\56\27\0\17\4\1\0"+
-    "\5\4\1\57\7\4\11\0\17\4\1\0\1\37\14\4"+
-    "\11\0\4\4\1\60\12\4\1\0\4\4\1\60\10\4"+
-    "\11\0\17\4\1\0\2\4\1\37\12\4\11\0\5\4"+
-    "\1\60\11\4\1\0\4\4\1\60\10\4\11\0\17\4"+
-    "\1\0\6\4\1\60\6\4\11\0\17\4\1\0\11\4"+
-    "\1\57\3\4\11\0\1\4\1\46\15\4\1\0\15\4"+
-    "\11\0\17\4\1\0\4\4\1\60\10\4\11\0\2\4"+
-    "\1\60\14\4\1\0\15\4\11\0\17\4\1\0\4\4"+
-    "\1\61\10\4\12\0\1\62\50\0\1\63\43\0\1\64"+
-    "\73\0\1\65\22\0\1\66\43\0\1\56\47\0\1\67"+
-    "\44\0\1\70\37\0";
+    "\2\4\1\17\1\20\3\4\1\21\1\4\1\22\1\23"+
+    "\1\24\1\25\1\23\1\4\1\26\1\27\1\30\12\0"+
+    "\1\31\22\0\1\32\16\0\1\33\1\0\1\34\1\0"+
+    "\1\35\1\36\1\37\1\0\1\40\1\37\1\41\14\0"+
+    "\1\41\3\0\1\32\16\0\20\4\1\0\16\4\5\0"+
+    "\1\4\5\0\2\4\1\42\15\4\1\0\16\4\5\0"+
+    "\1\4\5\0\20\4\1\0\1\43\6\4\1\43\6\4"+
+    "\5\0\1\4\5\0\1\4\1\44\1\45\3\4\1\46"+
+    "\11\4\1\0\1\4\1\47\1\50\1\4\1\51\2\4"+
+    "\1\52\2\4\2\50\2\4\5\0\1\4\15\0\1\31"+
+    "\2\0\5\53\13\0\1\32\26\0\1\31\2\0\4\53"+
+    "\14\0\1\32\16\0\20\4\1\0\5\4\1\54\10\4"+
+    "\5\0\1\4\5\0\1\4\1\55\4\4\1\46\11\4"+
+    "\1\0\4\4\1\52\2\4\1\56\6\4\5\0\1\4"+
+    "\5\0\20\4\1\0\1\4\1\57\14\4\5\0\1\4"+
+    "\5\0\4\4\1\60\13\4\1\0\2\4\1\50\2\4"+
+    "\1\60\4\4\2\50\2\4\5\0\1\4\5\0\3\4"+
+    "\1\61\14\4\1\0\16\4\5\0\1\4\5\0\3\4"+
+    "\1\5\14\4\1\0\16\4\5\0\1\4\5\0\4\4"+
+    "\1\62\13\4\1\0\16\4\5\0\1\4\45\0\1\23"+
+    "\61\0\12\63\1\64\22\63\1\65\3\63\1\22\1\23"+
+    "\7\63\7\0\1\66\2\0\1\31\10\0\1\67\11\0"+
+    "\1\32\25\0\1\70\45\0\1\71\47\0\1\72\54\0"+
+    "\1\73\52\0\1\73\5\0\2\73\2\0\1\73\45\0"+
+    "\5\73\41\0\1\73\51\0\1\74\3\0\2\73\1\0"+
+    "\2\73\45\0\1\73\3\0\1\73\32\0\20\4\1\0"+
+    "\5\4\1\75\10\4\5\0\1\4\5\0\20\4\1\0"+
+    "\1\42\15\4\5\0\1\4\5\0\20\4\1\0\11\4"+
+    "\1\60\4\4\5\0\1\4\5\0\4\4\1\76\13\4"+
+    "\1\0\4\4\1\76\11\4\5\0\1\4\5\0\1\4"+
+    "\1\60\3\4\1\60\12\4\1\0\16\4\5\0\1\4"+
+    "\5\0\20\4\1\0\2\4\1\42\13\4\5\0\1\4"+
+    "\5\0\1\4\1\60\3\4\1\76\12\4\1\0\4\4"+
+    "\1\76\11\4\5\0\1\4\5\0\1\4\1\60\16\4"+
+    "\1\0\16\4\5\0\1\4\20\0\5\53\32\0\20\4"+
+    "\1\0\6\4\1\76\7\4\5\0\1\4\5\0\20\4"+
+    "\1\0\11\4\1\77\4\4\5\0\1\4\5\0\1\4"+
+    "\1\100\16\4\1\0\16\4\5\0\1\4\5\0\20\4"+
+    "\1\0\4\4\1\76\11\4\5\0\1\4\5\0\2\4"+
+    "\1\76\15\4\1\0\16\4\5\0\1\4\5\0\20\4"+
+    "\1\0\4\4\1\101\11\4\5\0\1\4\3\0\41\63"+
+    "\1\22\1\23\20\63\1\102\27\63\1\22\1\23\14\63"+
+    "\1\103\33\63\1\22\1\23\7\63\3\0\1\104\54\0"+
+    "\1\105\51\0\1\106\47\0\1\107\51\0\1\110\47\0"+
+    "\1\60\17\4\1\0\16\4\5\0\1\4\5\0\1\60"+
+    "\17\4\1\0\11\4\1\75\4\4\5\0\1\4\3\0"+
+    "\6\63\1\111\32\63\1\22\1\23\13\63\1\112\34\63"+
+    "\1\22\1\23\7\63\33\0\1\113\25\0\1\114\110\0"+
+    "\1\115\26\0\1\116\33\0\1\73\44\0\41\63\1\22"+
+    "\1\23\3\63\1\117\26\63\1\120\15\63\1\22\1\23"+
+    "\7\63\7\0\1\121\50\0\1\122\46\0\1\123\46\0"+
+    "\3\63\1\124\35\63\1\22\1\23\7\63";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[1710];
+    int [] result = new int[2814];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -187,11 +216,12 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\1\11\6\1\1\11\13\1\3\11\7\0\14\1"+
-    "\3\0\1\11\3\1\5\0\2\11";
+    "\1\0\21\1\1\11\1\1\1\11\3\1\11\0\24\1"+
+    "\5\0\1\11\10\1\5\0\2\1\3\0\1\11\2\1"+
+    "\3\11\1\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[56];
+    int [] result = new int[84];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -665,67 +695,82 @@ public class MipsLexer implements sym, java_cup.runtime.Scanner {
             { /* ignore */
             } 
             // fall through
-          case 14: break;
+          case 17: break;
           case 2: 
             { return symbol(LABEL, yytext());
             } 
             // fall through
-          case 15: break;
+          case 18: break;
           case 3: 
             { return symbol(IMMEDIATE, yytext());
             } 
             // fall through
-          case 16: break;
+          case 19: break;
           case 4: 
             { return symbol(JOPCODE, yytext());
             } 
             // fall through
-          case 17: break;
+          case 20: break;
           case 5: 
-            { return symbol(OBRACKET, yytext());
-            } 
-            // fall through
-          case 18: break;
-          case 6: 
-            { return symbol(CBRACKET, yytext());
-            } 
-            // fall through
-          case 19: break;
-          case 7: 
             { throw new Error("Illegal character <"+yytext()+">");
             } 
             // fall through
-          case 20: break;
+          case 21: break;
+          case 6: 
+            { return symbol(OBRACKET, yytext());
+            } 
+            // fall through
+          case 22: break;
+          case 7: 
+            { return symbol(CBRACKET, yytext());
+            } 
+            // fall through
+          case 23: break;
           case 8: 
             { return symbol(ROPCODE, yytext());
             } 
             // fall through
-          case 21: break;
+          case 24: break;
           case 9: 
             { return symbol(IMOPCODE, yytext());
             } 
             // fall through
-          case 22: break;
-          case 10: 
-            { return symbol(REGISTER, yytext());
-            } 
-            // fall through
-          case 23: break;
-          case 11: 
-            { return symbol(IOPCODE, yytext());
-            } 
-            // fall through
-          case 24: break;
-          case 12: 
-            { return symbol(TEXT_SECTION);
-            } 
-            // fall through
           case 25: break;
-          case 13: 
-            { return symbol(DATA_SECTION);
+          case 10: 
+            { return symbol(PSOPCODE, yytext());
             } 
             // fall through
           case 26: break;
+          case 11: 
+            { return symbol(REGISTER, yytext());
+            } 
+            // fall through
+          case 27: break;
+          case 12: 
+            { return symbol(IOPCODE, yytext());
+            } 
+            // fall through
+          case 28: break;
+          case 13: 
+            { return symbol(WORD_TYPE);
+            } 
+            // fall through
+          case 29: break;
+          case 14: 
+            { return symbol(TEXT_SECTION);
+            } 
+            // fall through
+          case 30: break;
+          case 15: 
+            { return symbol(DATA_SECTION);
+            } 
+            // fall through
+          case 31: break;
+          case 16: 
+            { return symbol(SPACE_TYPE);
+            } 
+            // fall through
+          case 32: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
