@@ -15,3 +15,5 @@ probar el lexer, aun que sea con un codigo normalito
 ideas:
 la gramatica podria empezar y ser una secuencia de bloques basicos.
 Creo que puede funcionar
+
+-luego para la definicion de datos, en la misma regla creo que podemos agregar las comas, seguro que si

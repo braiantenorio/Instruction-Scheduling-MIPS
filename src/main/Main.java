@@ -1,15 +1,10 @@
 
 package main;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.Objects;
-
-import java_cup.runtime.Symbol;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -18,7 +13,12 @@ public class Main {
         try {
 
             MipsLexer lexer = new MipsLexer(new FileReader(inputFile.getPath()));
+            parser p = new parser(lexer);
+            Object result = p.parse().value;
 
+            System.out.println(result);
+
+/* 
             while (true) {
                 Symbol token = lexer.next_token();
                 if (token.sym == MipsLexer.YYEOF || token.sym == MipsLexer.EOF) {
@@ -27,7 +27,9 @@ public class Main {
             
                 // Imprimir información sobre el token, incluyendo yytext()
                 System.out.println("Token: " + MipsLexer.terminalNames[token.sym] + " - " + token.value + " - " + lexer.yytext());
-            }
+            }*/
+
+
             
         } catch (Exception e) {
             e.printStackTrace();

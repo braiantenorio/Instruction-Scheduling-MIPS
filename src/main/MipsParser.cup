@@ -1,3 +1,4 @@
+package main;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -25,57 +26,46 @@ terminal DOT_DATA;
 terminal DOT_TEXT;
 terminal DATA_TYPE;
 terminal SYSCALL;
-// En cuanto a las labels, estas podrian ser opcionales de todas las instrucciones, 
+terminal COMMA;
 
 non terminal instruction;
 non terminal labeled_instruction;
 non terminal instructionList;
 non terminal program;
 non terminal data_section;
-non terminal jump_instruction;
-non terminal basic_block_list;
-non terminal basic_block;
 non terminal var_declaration;
 non terminal var_declaration_list;
 non terminal immediate_list;
-non terminal labeled_j_instruction;
+
 
 start with program;
 
-program ::= data_section basic_block_list SYSCALL;
+program ::= data_section instructionList SYSCALL
+            {: RESULT = Integer.valueOf(666); :}
+            ;
 
-/* Seccion de datos */
-data_section ::= DOT_DATA var_declaration_list DOT_TEXT ;
+/* -------Seccion de datos------- */
+data_section ::=  DOT_DATA var_declaration_list DOT_TEXT 
+                  {: RESULT = Integer.valueOf(2); :}
+                  ;
 
 var_declaration_list ::=  var_declaration_list var_declaration
                           | 
                           var_declaration
-                          |
                           ;
 
-var_declaration ::= LABEL_DEF DATA_TYPE immediate_list
-                    | LABEL_DEF DATA_TYPE
-                    ;
+var_declaration ::= LABEL_DEF DATA_TYPE immediate_list;
 
 immediate_list ::=  IMMEDIATE
-                    | immediate_list IMMEDIATE
+                    | 
+                    immediate_list IMMEDIATE
                     ;
 
 
-/* ------Bloques basicos e instruccines------- */
-
-
-basic_block_list ::=  basic_block_list basic_block
-                      |
-                      basic_block
-                      ;
-
-basic_block ::= instructionList labeled_j_instruction
-                |
-                instructionList 
-                ; 
+/* ------Instruccines------- */
 
 instructionList ::= instructionList labeled_instruction
+                    {: RESULT = "nose"; :}
                     | 
                     labeled_instruction
                     ;
@@ -84,11 +74,6 @@ labeled_instruction ::= LABEL_DEF instruction
                         |
                         instruction
                         ;
-
-labeled_j_instruction ::= LABEL_DEF jump_instruction
-                          |
-                          jump_instruction
-                          ;
 
 
 instruction ::= ROPCODE:opcode REGISTER:rd REGISTER:rs REGISTER:rt
@@ -100,12 +85,10 @@ instruction ::= ROPCODE:opcode REGISTER:rd REGISTER:rs REGISTER:rt
                 LALIOPCODE REGISTER LABEL
                 |
                 LALIOPCODE REGISTER IMMEDIATE
+                |
+                JOPCODE LABEL
+                |
+                PSOPCODE REGISTER LABEL
+                |
+                PSOPCODE REGISTER REGISTER LABEL
                 ;
-
-
-jump_instruction ::=  JOPCODE LABEL
-                      |
-                      PSOPCODE REGISTER LABEL
-                      |
-                      PSOPCODE REGISTER REGISTER LABEL
-                      ;

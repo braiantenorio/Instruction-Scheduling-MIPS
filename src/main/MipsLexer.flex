@@ -98,7 +98,8 @@ EndOfLineComment     = "#" {InputCharacter}* {LineTerminator}?
 
     \(						{ return symbol(OBRACKET, yytext()); }
     \)						{ return symbol(CBRACKET, yytext()); }
-    .                       { /* ignore */ }
+    ","                     { /* return symbol(COMMA); */ }
+
 }
 
 [^]                    { throw new Error("Illegal character <"+yytext()+">"); }
