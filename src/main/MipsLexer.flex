@@ -43,11 +43,16 @@ I_MEM_INSTRUCTION = ("lw"|"sw"|"lh"|"sh"|"lb"|"sb")
  /* Jump instructions */
 J_INSTRUCTION = ("j"|"jal")
 
+PS_LA_LI_INSTRUCTION =("li"|"la")
+
  /* Pseudo instructions */
-PS_INSTRUCTION = ("li"|"la"|"seq"|"sge"|"sgt"|"sle"|"sne"|"beqz"|"bnez"|"bge"|"bgt"|"ble")
+PS_INSTRUCTION = ("seq"|"sge"|"sgt"|"sle"|"sne"|"beqz"|"bnez"|"bge"|"bgt"|"ble")
+
+SYSCALL = ("syscall")
 
 /* Labels */
 LABEL = [a-zA-Z_][a-zA-Z_0-9]*
+LABEL_DEF = {LABEL} ":"
 
 /* Data types */
 DATA_TYPES =  (\.(word|space))
@@ -64,27 +69,32 @@ EndOfLineComment     = "#" {InputCharacter}* {LineTerminator}?
 
 <YYINITIAL> {
 
-    {R_INSTRUCTION}		{ return symbol(ROPCODE, yytext()); }
-    {J_INSTRUCTION}		{ return symbol(JOPCODE, yytext()); }
-    {I_INSTRUCTION}		{ return symbol(IOPCODE, yytext()); }
-    {I_MEM_INSTRUCTION}	{ return symbol(IMOPCODE, yytext()); }
-    {PS_INSTRUCTION}	{ return symbol(PSOPCODE, yytext()); }
+    {R_INSTRUCTION}		    { return symbol(ROPCODE, yytext()); }
+    {J_INSTRUCTION}		    { return symbol(JOPCODE, yytext()); }
+    {I_INSTRUCTION}		    { return symbol(IOPCODE, yytext()); }
+    {I_MEM_INSTRUCTION}	    { return symbol(IMOPCODE, yytext()); }
+    {PS_LA_LI_INSTRUCTION}  { return symbol(LALIOPCODE, yytext()); }
+    {PS_INSTRUCTION}	    { return symbol(PSOPCODE, yytext()); }
 
 
-    {REGISTER}	        { return symbol(REGISTER, yytext()); }
-    {IMMEDIATE}	        { return symbol(IMMEDIATE, yytext()); }
+    {REGISTER}	            { return symbol(REGISTER, yytext()); }
+    {IMMEDIATE}	            { return symbol(IMMEDIATE, yytext()); }
 
-    {LABEL}             { return symbol(LABEL, yytext()); }
+    {SYSCALL}                { return symbol(SYSCALL); }
 
-    {DATA_TYPES}        { return symbol(DATA_TYPE, yytext()); }
+    {LABEL}                 { return symbol(LABEL, yytext()); }
+    {LABEL_DEF}             { return symbol(LABEL_DEF, yytext()); }
+
+
+    {DATA_TYPES}            { return symbol(DATA_TYPE, yytext()); }
 
     
-    {EndOfLineComment}                   { /* ignore */ }
+    {EndOfLineComment}      { /* ignore */ }
 
-    {WhiteSpace}                   { /* ignore */ }
+    {WhiteSpace}            { /* ignore */ }
 
-    \.text              { return symbol(TEXT_SECTION); }
-    \.data              { return symbol(DATA_SECTION); }
+    \.text                  { return symbol(DOT_TEXT); }
+    \.data                  { return symbol(DOT_DATA); }
 
     \(						{ return symbol(OBRACKET, yytext()); }
     \)						{ return symbol(CBRACKET, yytext()); }
