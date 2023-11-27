@@ -40,7 +40,7 @@ non terminal immediate_list;
 
 start with program;
 
-program ::= data_section instructionList SYSCALL
+program ::= data_section instructionList
             {: RESULT = Integer.valueOf(666); :}
             ;
 
@@ -91,4 +91,6 @@ instruction ::= ROPCODE:opcode REGISTER:rd REGISTER:rs REGISTER:rt
                 PSOPCODE REGISTER LABEL
                 |
                 PSOPCODE REGISTER REGISTER LABEL
+                |
+                SYSCALL
                 ;
