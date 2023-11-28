@@ -41,7 +41,7 @@ I_INSTRUCTION = ("addi"|"subi"|"andi"|"ori"|"xori"|"beq"|"bneq")
 I_MEM_INSTRUCTION = ("lw"|"sw"|"lh"|"sh"|"lb"|"sb")
  
  /* Jump instructions */
-J_INSTRUCTION = ("j"|"jal")
+J_INSTRUCTION = ("j"|"jal"|"jr")
 
 PS_LA_LI_INSTRUCTION =("li"|"la")
 

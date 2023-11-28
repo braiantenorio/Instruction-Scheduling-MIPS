@@ -3,25 +3,18 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Instruction {
+public class Instruction extends Line {
     private String opcode;
-    private String line; 
     private List<String> readRegisters; 
     private List<String> writeRegisters; 
 
-    public Instruction(String opcode, String line, List<String> readRegisters, List<String> writeRegisters) {
-        this.opcode = opcode;
-        this.line = line;
-        this.readRegisters = readRegisters;
-        this.writeRegisters = writeRegisters;
-    }
 
-    public Instruction(String opcode) {
+    public Instruction(String line, String opcode) {
+        super(line);
         this.opcode = opcode;
         this.readRegisters = new ArrayList<>();
         this.writeRegisters = new ArrayList<>();
     }
-
 
     public String getOpcode() {
         return opcode;

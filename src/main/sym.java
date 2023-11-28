@@ -19,7 +19,6 @@ public interface sym {
   public static final int DOT_DATA = 14;
   public static final int ROPCODE = 2;
   public static final int JOPCODE = 5;
-  public static final int COMMA = 18;
   public static final int IOPCODE = 3;
   public static final int EOF = 0;
   public static final int error = 1;
@@ -45,8 +44,7 @@ public interface sym {
   "DOT_DATA",
   "DOT_TEXT",
   "DATA_TYPE",
-  "SYSCALL",
-  "COMMA"
+  "SYSCALL"
   };
 }
 

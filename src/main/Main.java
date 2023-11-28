@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import java_cup.runtime.Symbol;
+
 public class Main {
     public static void main(String[] args) throws IOException {
         File inputFile = openFile("src/main/ejemplo.asm");
@@ -16,9 +18,9 @@ public class Main {
             parser p = new parser(lexer);
             Object result = p.parse().value;
 
-            System.out.println(result);
+            //System.out.println(result);
 
-/* 
+
             while (true) {
                 Symbol token = lexer.next_token();
                 if (token.sym == MipsLexer.YYEOF || token.sym == MipsLexer.EOF) {
@@ -27,7 +29,7 @@ public class Main {
             
                 // Imprimir información sobre el token, incluyendo yytext()
                 System.out.println("Token: " + MipsLexer.terminalNames[token.sym] + " - " + token.value + " - " + lexer.yytext());
-            }*/
+            }
 
 
             

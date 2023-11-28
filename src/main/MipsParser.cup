@@ -26,27 +26,24 @@ terminal DOT_DATA;
 terminal DOT_TEXT;
 terminal DATA_TYPE;
 terminal SYSCALL;
-terminal COMMA;
 
 non terminal instruction;
-non terminal labeled_instruction;
-non terminal instructionList;
+non terminal instructions_and_label_defs;
 non terminal program;
 non terminal data_section;
 non terminal var_declaration;
 non terminal var_declaration_list;
 non terminal immediate_list;
-
+non terminal instruction_or_label_def;
 
 start with program;
 
-program ::= data_section instructionList
+program ::= data_section instructions_and_label_defs
             {: RESULT = Integer.valueOf(666); :}
             ;
 
 /* -------Seccion de datos------- */
 data_section ::=  DOT_DATA var_declaration_list DOT_TEXT 
-                  {: RESULT = Integer.valueOf(2); :}
                   ;
 
 var_declaration_list ::=  var_declaration_list var_declaration
@@ -64,33 +61,36 @@ immediate_list ::=  IMMEDIATE
 
 /* ------Instruccines------- */
 
-instructionList ::= instructionList labeled_instruction
-                    {: RESULT = "nose"; :}
-                    | 
-                    labeled_instruction
-                    ;
+instructions_and_label_defs ::=    
+                instructions_and_label_defs instruction_or_label_def
+        |       instruction_or_label_def
+        ;
 
-labeled_instruction ::= LABEL_DEF instruction
-                        |
-                        instruction
-                        ;
+instruction_or_label_def ::= 
+                instruction:i
+
+        |       LABEL_DEF:lab
+                
+        ;
 
 
 instruction ::= ROPCODE:opcode REGISTER:rd REGISTER:rs REGISTER:rt
                 |	    
-                IOPCODE:opcode REGISTER:rt REGISTER:rs IMMEDIATE                
+                IOPCODE:opcode REGISTER:rt REGISTER:rs IMMEDIATE:immd                
                 |
-                IMOPCODE:opcode REGISTER:rt IMMEDIATE OBRACKET REGISTER:rs CBRACKET
+                IMOPCODE:opcode REGISTER:rt IMMEDIATE:immd OBRACKET REGISTER:rs CBRACKET
                 |
-                LALIOPCODE REGISTER LABEL
+                LALIOPCODE:opcode REGISTER:rd LABEL:lab
                 |
-                LALIOPCODE REGISTER IMMEDIATE
+                LALIOPCODE:opcode REGISTER:rd IMMEDIATE:immd
                 |
-                JOPCODE LABEL
+                JOPCODE:opcode LABEL:lab
                 |
-                PSOPCODE REGISTER LABEL
+                JOPCODE:opcode REGISTER:rs
                 |
-                PSOPCODE REGISTER REGISTER LABEL
+                PSOPCODE:opcode REGISTER:rs LABEL:lab
+                |
+                PSOPCODE:opcode REGISTER:rs REGISTER:rt LABEL:lab
                 |
                 SYSCALL
                 ;
