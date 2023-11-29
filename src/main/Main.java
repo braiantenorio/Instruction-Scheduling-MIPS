@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import java_cup.runtime.Symbol;
 
@@ -16,27 +19,45 @@ public class Main {
 
             MipsLexer lexer = new MipsLexer(new FileReader(inputFile.getPath()));
             parser p = new parser(lexer);
-            Object result = p.parse().value;
+            List<Line> result;
+            result = (List<Line>) p.parse().value;
 
-            //System.out.println(result);
+            System.out.println(getBasicblocks(result));
 
-
-            while (true) {
-                Symbol token = lexer.next_token();
-                if (token.sym == MipsLexer.YYEOF || token.sym == MipsLexer.EOF) {
-                    break;
-                }
-            
-                // Imprimir información sobre el token, incluyendo yytext()
-                System.out.println("Token: " + MipsLexer.terminalNames[token.sym] + " - " + token.value + " - " + lexer.yytext());
-            }
-
-
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    /*
+     * funciona bien pero en algunos casos genera sublistas vacias. asi que supongo
+     * que es cuestion de eliminarlas
+     */
+    private static List<List<Line>> getBasicblocks(List<Line> program) {
+        List<List<Line>> result = new ArrayList<>();
+        Iterator<Line> it = program.iterator();
+        it.next();
+        int firstIndex = 0;
+        int actualIndex = 0;
+        while (it.hasNext()) {
+            Line actual = it.next();
+            actualIndex++;
+            if (actual instanceof LabelDef) {
+                if (actualIndex != firstIndex) { // evita bloques vacios
+                    result.add(program.subList(firstIndex, actualIndex));
+                    firstIndex = actualIndex;
+                }
+
+            }
+            if (actual instanceof JumpInstruction) {
+                result.add(program.subList(firstIndex, actualIndex + 1));
+                firstIndex = actualIndex + 1;
+            }
+
+        }
+
+        return result;
     }
 
     private static File openFile(String pathName) throws IOException {

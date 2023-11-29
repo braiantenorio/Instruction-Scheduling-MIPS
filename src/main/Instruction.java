@@ -56,4 +56,9 @@ public class Instruction extends Line {
         this.readRegisters.add(readRegister);
     }
 
+    @Override
+    public String toString() {
+        return "\t" + super.toString();
+    }
+    
 }

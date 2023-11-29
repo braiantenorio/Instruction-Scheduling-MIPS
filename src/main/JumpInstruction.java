@@ -6,4 +6,9 @@ public class JumpInstruction extends Line {
         super(line);
     }
 
+    @Override
+    public String toString() {
+        return "\t" + super.toString();
+    }
+
 }

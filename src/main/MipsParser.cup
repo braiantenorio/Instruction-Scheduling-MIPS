@@ -8,39 +8,43 @@ import java_cup.runtime.*;
 parser code {:
 
 
+        List instructionsList = new ArrayList();
+
 :}
 
-terminal ROPCODE; 
-terminal IOPCODE;
-terminal IMOPCODE; 
-terminal JOPCODE;
-terminal PSOPCODE; 
-terminal LALIOPCODE;
-terminal REGISTER; // se le puede poner tipos por ejemplo terminal Integer NUMBER; non terminal Integer expr, term;
-terminal IMMEDIATE; 
+terminal String ROPCODE; 
+terminal String IOPCODE;
+terminal String IMOPCODE; 
+terminal String JOPCODE;
+terminal String PSOPCODE; 
+terminal String LALIOPCODE;
+terminal String REGISTER; // se le puede poner tipos por ejemplo terminal Integer NUMBER; non terminal Integer expr, term;
+terminal String IMMEDIATE; 
 terminal OBRACKET; 
 terminal CBRACKET;
-terminal LABEL;
-terminal LABEL_DEF;
+terminal String LABEL;
+terminal String LABEL_DEF;
 terminal DOT_DATA;
 terminal DOT_TEXT;
 terminal DATA_TYPE;
-terminal SYSCALL;
+terminal SYSCALL; //veamos que objeto es
 
-non terminal instruction;
-non terminal instructions_and_label_defs;
-non terminal program;
-non terminal data_section;
-non terminal var_declaration;
-non terminal var_declaration_list;
-non terminal immediate_list;
-non terminal instruction_or_label_def;
+non terminal List<Line> program;
+non terminal List<Line> data_section;
+non terminal Line var_declaration;
+non terminal List<Line> var_declaration_list;
+non terminal String immediate_list;
+non terminal List<Line> instructions_and_label_defs;
+non terminal Line instruction_or_label_def;
+non terminal Line instruction;
 
 start with program;
 
-program ::= data_section instructions_and_label_defs
-            {: RESULT = Integer.valueOf(666); :}
-            ;
+program ::= data_section:d instructions_and_label_defs:i
+                {: 
+                        RESULT = i; 
+                :}
+                ;
 
 /* -------Seccion de datos------- */
 data_section ::=  DOT_DATA var_declaration_list DOT_TEXT 
@@ -59,38 +63,97 @@ immediate_list ::=  IMMEDIATE
                     ;
 
 
-/* ------Instruccines------- */
+/* ------Instrucciones------- */
 
 instructions_and_label_defs ::=    
-                instructions_and_label_defs instruction_or_label_def
-        |       instruction_or_label_def
-        ;
+                instructions_and_label_defs instruction_or_label_def:i
+                {:      
+                        instructionsList.add(i);
+                        RESULT = instructionsList;
+                :}
+                |       
+                instruction_or_label_def:i
+                {:      
+                        instructionsList.add(i);
+                        RESULT = instructionsList;
+                :}
+                ;
 
 instruction_or_label_def ::= 
                 instruction:i
-
-        |       LABEL_DEF:lab
-                
-        ;
+                {:      
+                        RESULT = i;
+                :}
+                |       
+                LABEL_DEF:lab
+                {:      
+                         RESULT = new LabelDef(String.format("%s", lab));
+                :}
+                ;
 
 
 instruction ::= ROPCODE:opcode REGISTER:rd REGISTER:rs REGISTER:rt
+                {:      
+                        Instruction ins = new Instruction(String.format("%s %s, %s, %s", opcode, rd, rs, rt), opcode);
+                        ins.addWriteRegister(rd);
+                        ins.addReadRegister(rs);
+                        ins.addReadRegister(rt);
+                        RESULT = ins;
+                :}
                 |	    
-                IOPCODE:opcode REGISTER:rt REGISTER:rs IMMEDIATE:immd                
+                IOPCODE:opcode REGISTER:rt REGISTER:rs IMMEDIATE:immd
+                {:      
+                        Instruction ins = new Instruction(String.format("%s %s, %s, %s", opcode, rt, rs, immd), opcode);
+                        ins.addWriteRegister(rt);
+                        ins.addReadRegister(rs);
+                        RESULT = ins;
+                :}               
                 |
                 IMOPCODE:opcode REGISTER:rt IMMEDIATE:immd OBRACKET REGISTER:rs CBRACKET
+                {:      
+                        Instruction ins = new Instruction(String.format("%s %s, %s(%s)", opcode, rt, immd, rs), opcode);
+                        ins.addWriteRegister(rt);
+                        ins.addReadRegister(rs);
+                        RESULT = ins;
+                :}               
                 |
                 LALIOPCODE:opcode REGISTER:rd LABEL:lab
+                {:      
+                        Instruction ins = new Instruction(String.format("%s %s, %s", opcode, rd, lab), opcode);
+                        ins.addWriteRegister(rd);
+                        // aca no puse label como que lo lee, creo que esta bien xd
+                        RESULT = ins;
+                :}
                 |
                 LALIOPCODE:opcode REGISTER:rd IMMEDIATE:immd
+                {:      
+                        Instruction ins = new Instruction(String.format("%s %s, %s", opcode, rd, immd), opcode);
+                        ins.addWriteRegister(rd);
+                        RESULT = ins;
+                :}
                 |
                 JOPCODE:opcode LABEL:lab
+                {:
+                        RESULT = new JumpInstruction(String.format("%s %s", opcode, lab));
+                :}
                 |
                 JOPCODE:opcode REGISTER:rs
+                {:
+                        RESULT = new JumpInstruction(String.format("%s %s", opcode, rs));
+                :}
                 |
                 PSOPCODE:opcode REGISTER:rs LABEL:lab
+                {:
+                        RESULT = new JumpInstruction(String.format("%s %s, %s", opcode, rs, lab));
+                :}
                 |
                 PSOPCODE:opcode REGISTER:rs REGISTER:rt LABEL:lab
+                {:
+                        RESULT = new JumpInstruction(String.format("%s %s, %s, %s", opcode, rs, rt, lab));
+                :}
                 |
-                SYSCALL
+                SYSCALL:s
+                {:
+                        RESULT = new JumpInstruction(String.format("%s",s));
+                :}
                 ;

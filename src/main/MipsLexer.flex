@@ -37,7 +37,7 @@ IMMEDIATE = (0|[-+]?[1-9][0-9]*)
 R_INSTRUCTION = ("add"|"sub"|"mul"|"div"|"and"|"or"|"xor"|"nor"|"slt"|"sll"|"srl"|"sra")
  
  /* Immediate instructions */
-I_INSTRUCTION = ("addi"|"subi"|"andi"|"ori"|"xori"|"beq"|"bneq")
+I_INSTRUCTION = ("addi"|"subi"|"andi"|"ori"|"xori"|"beq"|"bneq") //deberiamos mover beq y bneq a las de salto
 I_MEM_INSTRUCTION = ("lw"|"sw"|"lh"|"sh"|"lb"|"sb")
  
  /* Jump instructions */
@@ -80,7 +80,7 @@ EndOfLineComment     = "#" {InputCharacter}* {LineTerminator}?
     {REGISTER}	            { return symbol(REGISTER, yytext()); }
     {IMMEDIATE}	            { return symbol(IMMEDIATE, yytext()); }
 
-    {SYSCALL}                { return symbol(SYSCALL); }
+    {SYSCALL}                { return symbol(SYSCALL, yytext()); }
 
     {LABEL}                 { return symbol(LABEL, yytext()); }
     {LABEL_DEF}             { return symbol(LABEL_DEF, yytext()); }
