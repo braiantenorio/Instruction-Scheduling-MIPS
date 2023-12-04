@@ -17,3 +17,5 @@ la gramatica podria empezar y ser una secuencia de bloques basicos.
 Creo que puede funcionar
 
 -luego para la definicion de datos, en la misma regla creo que podemos agregar las comas, seguro que si
+
+- podriamos, con un if, no agregar $zero a los reading registers

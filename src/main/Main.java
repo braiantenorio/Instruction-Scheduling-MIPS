@@ -8,11 +8,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
 
 import java_cup.runtime.Symbol;
+import net.datastructures.AdjacencyMapGraph;
+import net.datastructures.Graph;
+import net.datastructures.Vertex;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        // File inputFile = openFile("src/main/ejemplo.asm");
         File inputFile = openFile("src/main/ejemplo.asm");
 
         try {
@@ -22,11 +27,34 @@ public class Main {
             List<Line> result;
             result = (List<Line>) p.parse().value;
 
-            System.out.println(getBasicblocks(result));
+            List<List<Line>> basicBlocks = getBasicblocks(result);
+            for (List<Line> basicBlock : basicBlocks) {
+                System.out.println(sort(basicBlock));
+
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    private static List<Line> sort(List<Line> basicBlock) {
+        List<Instruction> instructions = new LinkedList<Instruction>();
+        Graph<Line, Integer> DAG = new AdjacencyMapGraph<>(true); // por ahora es integer pero puede mejorar
+        for (Line instruction : basicBlock) {
+            if (instruction instanceof Instruction) {
+                instructions.add((Instruction) instruction);
+            }
+        }
+
+        if (instructions.size() < 3) {
+            return basicBlock; // Esto es cuando no se puede ordenar nada y lo devuelve tal cual
+        }
+
+        // Aca hay que ordenar y devolver xd
+
+        return basicBlock;
 
     }
 
