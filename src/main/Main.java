@@ -9,27 +9,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
-
-import java_cup.runtime.Symbol;
-import net.datastructures.AdjacencyMapGraph;
-import net.datastructures.Graph;
-import net.datastructures.Vertex;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.Graph;
+import org.jgrapht.traverse.BreadthFirstIterator;
+//usemos el https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/traverse/BreadthFirstIterator.html#getDepth(V)
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        File inputFile = openFile("src/main/test.asm");
         // File inputFile = openFile("src/main/ejemplo.asm");
-        File inputFile = openFile("src/main/ejemplo.asm");
 
         try {
 
             MipsLexer lexer = new MipsLexer(new FileReader(inputFile.getPath()));
             parser p = new parser(lexer);
-            List<Line> result;
-            result = (List<Line>) p.parse().value;
+            List<Line> result = (List<Line>) p.parse().value;
 
             List<List<Line>> basicBlocks = getBasicblocks(result);
             for (List<Line> basicBlock : basicBlocks) {
-                System.out.println(sort(basicBlock));
+                // System.out.println(basicBlock); //para ver como son los basic blocks
+                 System.out.println(sort(basicBlock));
+                //sort(basicBlock);
 
             }
 
@@ -40,22 +40,79 @@ public class Main {
     }
 
     private static List<Line> sort(List<Line> basicBlock) {
-        List<Instruction> instructions = new LinkedList<Instruction>();
-        Graph<Line, Integer> DAG = new AdjacencyMapGraph<>(true); // por ahora es integer pero puede mejorar
+        LinkedList<Instruction> instructions = new LinkedList<Instruction>();
+        // Graph<Line, Integer> DAG = new AdjacencyMapGraph<>(true); // por ahora es
+        // integer pero puede mejorar
         for (Line instruction : basicBlock) {
             if (instruction instanceof Instruction) {
                 instructions.add((Instruction) instruction);
             }
         }
 
-        if (instructions.size() < 3) {
+        if (instructions.size() <= 2) {
             return basicBlock; // Esto es cuando no se puede ordenar nada y lo devuelve tal cual
         }
 
-        // Aca hay que ordenar y devolver xd
+        // Aca hay que ordenar y devolver
+        // cuidado con la doble dependencia, seria solo 1 arco siempre
 
-        return basicBlock;
+        Graph<Instruction, DefaultEdge> DAG = DAGBuilder.buildDAG(instructions);
 
+        // System.out.println(DAG.inDegreeOf(instructions.get(0)));
+
+        List<Instruction> sortedBasicBlock = sortDAG(DAG);
+
+        // al parecer asi lo resolvemos (el tema de volver a poner la lista en su lugar)
+        int index = 0;
+        for (int i = 0; i < basicBlock.size(); i++) {
+            if (basicBlock.get(i) instanceof Instruction) {
+                basicBlock.set(i, sortedBasicBlock.get(index++));
+            }
+        }
+
+        return basicBlock; // return de una ordenada? osea una funcion?
+
+    }
+
+    public static List<Instruction> sortDAG(Graph<Instruction, DefaultEdge> DAG) {
+        List<Instruction> result = new ArrayList<>();
+        List<Instruction> candidates = new ArrayList<>();
+        for (Instruction instruction : DAG.vertexSet()) {
+            if (DAG.inDegreeOf(instruction) == 0) {
+                candidates.add(instruction);
+            }
+        }
+
+        //System.out.println(candidates);
+        
+
+        while (DAG.vertexSet().size() != 0) {
+            if (!candidates.isEmpty()) {
+                Instruction selected = candidates.get(0);
+                
+                for (Instruction candidate : candidates) {
+                    if (DAG.outDegreeOf(candidate) < DAG.outDegreeOf(selected)) {
+                        selected = candidate;
+                    }
+                }
+
+                // Elimina el nodo del DAG y devuelve la instrucción seleccionada
+                result.add(selected);
+                DAG.removeVertex(selected);
+                candidates.remove(selected);
+            }
+
+            candidates.clear();
+            for (Instruction instruction : DAG.vertexSet()) {
+                if (DAG.inDegreeOf(instruction) == 0) {
+                    candidates.add(instruction);
+                }
+            }
+            System.out.println(candidates);
+
+        }
+
+        return result; // No quedan instrucciones sin dependencias pendientes
     }
 
     /*
@@ -63,7 +120,8 @@ public class Main {
      * que es cuestion de eliminarlas
      */
     private static List<List<Line>> getBasicblocks(List<Line> program) {
-        List<List<Line>> result = new ArrayList<>();
+        List<List<Line>> result = new LinkedList<>(); // ahora lo cambiamos a linked list por que luego es mas facil
+                                                      // insertar listas xd
         Iterator<Line> it = program.iterator();
         it.next();
         int firstIndex = 0;

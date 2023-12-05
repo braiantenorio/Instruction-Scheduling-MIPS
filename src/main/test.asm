@@ -1,16 +1,18 @@
 .data
-
+V:	.word 		4, -1,
+		
 .text
     main:
-        lw $1, 0($0)    # Cargar el contenido de la dirección de memoria 0 en el registro $1
-        lw $2, 4($0)    # Cargar el contenido de la dirección de memoria 4 en el registro $2
-        add $3, $1, $2  # Sumar los contenidos de $1 y $2 y almacenar el resultado en $3
-        sw $3, 12($0)   # Almacenar el contenido de $3 en la dirección de memoria 12
+    la $t0, V		# cargamos dir de V (&V) en t0
 
-        lw $4, 8($0)    # Cargar el contenido de la dirección de memoria 8 en el registro $4
-        add $3, $1, $4  # Sumar los contenidos de $1 y $4 y almacenar el resultado en $3
-        sw $3, 16($0)   # Almacenar el contenido de $3 en la dirección de memoria 16
+    lw $t1, 0($t0)    # Cargar el contenido de la direcciï¿½n de memoria 0 en el registro $1
+    lw $t2, 4($t0)   # Cargar el contenido de la direcciï¿½n de memoria 4 en el registro $2
+    add $t3, $t1, $t2  # Sumar los contenidos de $1 y $2 y almacenar el resultado en $3
+    sw $t3, 12($t0)   # Almacenar el contenido de $3 en la direcciï¿½n de memoria 12
 
-        # Agregamos un código de salida para terminar el programa
-        li $v0, 10       # Cargar el código de la llamada al sistema para salir del programa
-        syscall         # Realizar la llamada al sistema
+    lw $t4, 8($t0)    # Cargar el contenido de la direcciï¿½n de memoria 8 en el registro $4
+    add $t3, $t1, $t4  # Sumar los contenidos de $1 y $4 y almacenar el resultado en $3
+    sw $t3, 16($t0)   # Almacenar el contenido de $3 en la direcciï¿½n de memoria 16
+
+    li $v0, 10       # Cargar el cï¿½digo de la llamada al sistema para salir del programa
+    syscall         # Realizar la llamada al sistema
