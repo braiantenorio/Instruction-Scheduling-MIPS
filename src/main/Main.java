@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
+
+import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -62,7 +64,9 @@ public class Main {
         }
 
         Graph<Instruction, DefaultEdge> DAG = DAGBuilder.buildDAG(instructions);
-        List<Instruction> sortedBasicBlock = sortDAG(DAG);
+        Graph<Instruction, DefaultEdge> originalDAG = DAGBuilder.buildDAG(instructions);
+
+        List<Instruction> sortedBasicBlock = sortDAG(DAG, originalDAG);
 
         // reasignamos la lista
         int index = 0;
@@ -75,7 +79,8 @@ public class Main {
         return basicBlock;
     }
 
-    public static List<Instruction> sortDAG(Graph<Instruction, DefaultEdge> DAG) {
+    public static List<Instruction> sortDAG(Graph<Instruction, DefaultEdge> DAG,
+            Graph<Instruction, DefaultEdge> originalDAG) {
         List<Instruction> result = new ArrayList<>();
         List<Instruction> candidates = new ArrayList<>();
         List<Instruction> possibleLast = new ArrayList<>();
@@ -88,41 +93,18 @@ public class Main {
             }
         }
 
+        Instruction lastSelected = null;
         while (DAG.vertexSet().size() != 0) {
-            // SELECCION
             if (!candidates.isEmpty()) {
-                AllDirectedPaths<Instruction, DefaultEdge> allPaths = new AllDirectedPaths<Instruction, DefaultEdge>(
-                        DAG);
-                int max = 0;
-                Instruction selected = null;
-                for (Instruction candidate : candidates) {
-                    for (Instruction last : possibleLast) {
-                        List<GraphPath<Instruction, DefaultEdge>> paths = allPaths.getAllPaths(candidate, last, true,
-                                DAG.vertexSet().size());
-                        if (paths.isEmpty()) // esta mal, no deberia romper el for, deberia solo saltear esta partecita siguiente
-                            break;
 
-                        for (GraphPath<Instruction, DefaultEdge> path : paths) {
-                            if (path.getLength() > max) {
-                                max = path.getLength();
-                                selected = candidate;
-
-                            }
-                        }
-
-                    }
-                }
-                //aca termina el proceso de seleccion
+                Instruction selected = selectNext(candidates, possibleLast, DAG, originalDAG, lastSelected);
                 if (selected == null) {
                     selected = candidates.get(0);
 
                 }
-                /*
-                 * System.out.println(candidates + " candidates");
-                 * System.out.println(possibleLast + " possibleLast");
-                 * System.out.println(selected + " selected");
-                 */
+
                 result.add(selected);
+                lastSelected = selected;
                 DAG.removeVertex(selected);
                 candidates.remove(selected);
 
@@ -140,8 +122,81 @@ public class Main {
             }
 
         }
-
         return result; // No quedan instrucciones sin dependencias pendientes
+    }
+
+    /*
+     * 
+     * Metodo para elegir la siguiente instruccion
+     */
+    private static Instruction selectNext(List<Instruction> candidates, List<Instruction> possibleLast,
+            Graph<Instruction, DefaultEdge> DAG, Graph<Instruction, DefaultEdge> originalDAG,
+            Instruction lastSelected) {
+        Instruction selected = null;
+
+        if (candidates.size() == 1) {
+            System.out.println("Unico candidato: " + candidates.get(0));
+            return candidates.get(0);
+        }
+        // Primera regla
+        for (Instruction candidate : candidates) {
+            if (!originalDAG.containsEdge(lastSelected, candidate)) {
+                System.out.println("primera regla, eligiendo: " + candidate);
+                return candidate;
+            }
+
+        }
+
+        // Segunda regla
+        int maxOutDegree = 0;
+        List<Integer> outDegrees = new ArrayList<Integer>();
+        Instruction aCandidate = null;
+        for (Instruction candidate : candidates) {
+            outDegrees.add(DAG.outDegreeOf(candidate));
+            if (DAG.outDegreeOf(candidate) > maxOutDegree) {
+                maxOutDegree = DAG.outDegreeOf(candidate);
+                aCandidate = candidate;
+            }
+        }
+
+        List<Instruction> toRemove = new ArrayList<>();
+        for (int j = 0; j < outDegrees.size(); j++) {
+            if (outDegrees.get(j) != maxOutDegree) {
+                toRemove.add(candidates.get(j));
+            }
+        }
+
+        if (toRemove.size() == candidates.size() - 1) {
+            System.out.println("segunda regla, eligiendo: " + aCandidate);
+            return aCandidate;
+        } else {
+            candidates.removeAll(toRemove);
+        }
+
+        // tercer regla
+        AllDirectedPaths<Instruction, DefaultEdge> allPaths = new AllDirectedPaths<Instruction, DefaultEdge>(
+                DAG);
+        int max = 0;
+        for (Instruction candidate : candidates) {
+            for (Instruction last : possibleLast) {
+                List<GraphPath<Instruction, DefaultEdge>> paths = allPaths.getAllPaths(candidate, last, true,
+                        DAG.vertexSet().size());
+                if (paths.isEmpty()) // esta mal, no deberia romper el for, deberia solo saltear esta partecita
+                                     // siguiente
+                    break;
+
+                for (GraphPath<Instruction, DefaultEdge> path : paths) {
+                    if (path.getLength() > max) {
+                        max = path.getLength();
+                        selected = candidate;
+                    }
+                }
+
+            }
+        }
+        System.out.println("tercera regla eligiendo: " + selected);
+        ;
+        return selected;
 
     }
 
