@@ -11,8 +11,19 @@ import java.util.List;
 import java.util.LinkedList;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.Graph;
-import org.jgrapht.traverse.BreadthFirstIterator;
-//usemos el https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/traverse/BreadthFirstIterator.html#getDepth(V)
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.AllDirectedPaths;
+
+/*
+ * Funciona bien pero falta aplicar las otras heristic, en orden.
+ * 
+ * Las heuristic EN ORDEN van a ser 
+ *  
+ * - It does not interlock with the previously scheduled instruction(avoid stalls)
+ * - It has many successors in the graph (may enable successors to be scheduled with greater flexibility)
+ * - is as far away as possible (along paths in the DAG) from an instruction which can validly be scheduled last
+ * 
+ */
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -27,9 +38,8 @@ public class Main {
 
             List<List<Line>> basicBlocks = getBasicblocks(result);
             for (List<Line> basicBlock : basicBlocks) {
-                // System.out.println(basicBlock); //para ver como son los basic blocks
-                 System.out.println(sort(basicBlock));
-                //sort(basicBlock);
+                System.out.println(sort(basicBlock));
+                // sort(basicBlock);
 
             }
 
@@ -41,8 +51,6 @@ public class Main {
 
     private static List<Line> sort(List<Line> basicBlock) {
         LinkedList<Instruction> instructions = new LinkedList<Instruction>();
-        // Graph<Line, Integer> DAG = new AdjacencyMapGraph<>(true); // por ahora es
-        // integer pero puede mejorar
         for (Line instruction : basicBlock) {
             if (instruction instanceof Instruction) {
                 instructions.add((Instruction) instruction);
@@ -53,16 +61,10 @@ public class Main {
             return basicBlock; // Esto es cuando no se puede ordenar nada y lo devuelve tal cual
         }
 
-        // Aca hay que ordenar y devolver
-        // cuidado con la doble dependencia, seria solo 1 arco siempre
-
         Graph<Instruction, DefaultEdge> DAG = DAGBuilder.buildDAG(instructions);
-
-        // System.out.println(DAG.inDegreeOf(instructions.get(0)));
-
         List<Instruction> sortedBasicBlock = sortDAG(DAG);
 
-        // al parecer asi lo resolvemos (el tema de volver a poner la lista en su lugar)
+        // reasignamos la lista
         int index = 0;
         for (int i = 0; i < basicBlock.size(); i++) {
             if (basicBlock.get(i) instanceof Instruction) {
@@ -70,36 +72,66 @@ public class Main {
             }
         }
 
-        return basicBlock; // return de una ordenada? osea una funcion?
-
+        return basicBlock;
     }
 
     public static List<Instruction> sortDAG(Graph<Instruction, DefaultEdge> DAG) {
         List<Instruction> result = new ArrayList<>();
         List<Instruction> candidates = new ArrayList<>();
+        List<Instruction> possibleLast = new ArrayList<>();
+
         for (Instruction instruction : DAG.vertexSet()) {
             if (DAG.inDegreeOf(instruction) == 0) {
                 candidates.add(instruction);
+            } else if (DAG.outDegreeOf(instruction) == 0) {
+                possibleLast.add(instruction);
             }
         }
 
-        //System.out.println(candidates);
-        
-
         while (DAG.vertexSet().size() != 0) {
+            // SELECCION
             if (!candidates.isEmpty()) {
-                Instruction selected = candidates.get(0);
-                
+                AllDirectedPaths<Instruction, DefaultEdge> allPaths = new AllDirectedPaths<Instruction, DefaultEdge>(
+                        DAG);
+                int max = 0;
+                Instruction selected = null;
                 for (Instruction candidate : candidates) {
-                    if (DAG.outDegreeOf(candidate) < DAG.outDegreeOf(selected)) {
-                        selected = candidate;
+                    selected= candidates.get(0);
+                    for (Instruction last : possibleLast) {
+                        List<GraphPath<Instruction, DefaultEdge>> paths = allPaths.getAllPaths(candidate, last, true,
+                                DAG.vertexSet().size());
+                        // si no hay conexion, solo esta vacio
+                        if (paths.isEmpty())  //esta mal, no deberia romper el for, deberia solo saltear esta partecita siguiente
+                            break;
+                        GraphPath<Instruction, DefaultEdge> longestPath = paths.get(0);
+                        selected = longestPath.getStartVertex();
+                        //System.out.println(longestPath + " longestpath");
+                        for (GraphPath<Instruction, DefaultEdge> path : paths) {
+                            if (path.getLength() > longestPath.getLength()) {
+                                longestPath = path;
+                                if (longestPath.getLength() > max) {
+                                   // System.out.println("hola");
+                                    max = longestPath.getLength();
+                                    selected = candidate;
+                                }
+                            }
+                        }
+
                     }
                 }
-
-                // Elimina el nodo del DAG y devuelve la instrucción seleccionada
+/* 
+                System.out.println(candidates + " candidates");
+                System.out.println(possibleLast + " possibleLast");
+                System.out.println(selected + " selected");
+*/
                 result.add(selected);
                 DAG.removeVertex(selected);
                 candidates.remove(selected);
+
+                if (possibleLast.contains(selected)) {
+                    possibleLast.remove(selected);
+                }
+
             }
 
             candidates.clear();
@@ -108,11 +140,11 @@ public class Main {
                     candidates.add(instruction);
                 }
             }
-            System.out.println(candidates);
 
         }
 
         return result; // No quedan instrucciones sin dependencias pendientes
+
     }
 
     /*
