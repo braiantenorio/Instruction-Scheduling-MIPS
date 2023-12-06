@@ -96,34 +96,32 @@ public class Main {
                 int max = 0;
                 Instruction selected = null;
                 for (Instruction candidate : candidates) {
-                    selected= candidates.get(0);
                     for (Instruction last : possibleLast) {
                         List<GraphPath<Instruction, DefaultEdge>> paths = allPaths.getAllPaths(candidate, last, true,
                                 DAG.vertexSet().size());
-                        // si no hay conexion, solo esta vacio
-                        if (paths.isEmpty())  //esta mal, no deberia romper el for, deberia solo saltear esta partecita siguiente
+                        if (paths.isEmpty()) // esta mal, no deberia romper el for, deberia solo saltear esta partecita siguiente
                             break;
-                        GraphPath<Instruction, DefaultEdge> longestPath = paths.get(0);
-                        selected = longestPath.getStartVertex();
-                        //System.out.println(longestPath + " longestpath");
+
                         for (GraphPath<Instruction, DefaultEdge> path : paths) {
-                            if (path.getLength() > longestPath.getLength()) {
-                                longestPath = path;
-                                if (longestPath.getLength() > max) {
-                                   // System.out.println("hola");
-                                    max = longestPath.getLength();
-                                    selected = candidate;
-                                }
+                            if (path.getLength() > max) {
+                                max = path.getLength();
+                                selected = candidate;
+
                             }
                         }
 
                     }
                 }
-/* 
-                System.out.println(candidates + " candidates");
-                System.out.println(possibleLast + " possibleLast");
-                System.out.println(selected + " selected");
-*/
+                //aca termina el proceso de seleccion
+                if (selected == null) {
+                    selected = candidates.get(0);
+
+                }
+                /*
+                 * System.out.println(candidates + " candidates");
+                 * System.out.println(possibleLast + " possibleLast");
+                 * System.out.println(selected + " selected");
+                 */
                 result.add(selected);
                 DAG.removeVertex(selected);
                 candidates.remove(selected);
