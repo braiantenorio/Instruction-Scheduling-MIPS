@@ -153,12 +153,12 @@ public class Main {
             return candidates.get(0);
         }
         // Primera regla
-        for (Instruction candidate : candidates) {
+        for (Instruction candidate : candidates) { 
+            //aca devuelve el primero que no tenga dependencia, si hay mas de 1, deberiamos dejarlos como candidatos. Como en la segunda regla
             if (!originalDAG.containsEdge(lastSelected, candidate)) {
                 System.out.println("primera regla, eligiendo: " + candidate);
                 return candidate;
             }
-
         }
 
         // Segunda regla
