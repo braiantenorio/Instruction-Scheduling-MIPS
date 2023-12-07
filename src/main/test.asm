@@ -1,8 +1,7 @@
 .data
-V:	.word 		4, -1,
-		
+V:	.word 		4, -1
 .text
-    main:
+main:
     la $t0, V		# cargamos dir de V (&V) en t0
 
     lw $t1, 0($t0)    # Cargar el contenido de la direcci�n de memoria 0 en el registro $1

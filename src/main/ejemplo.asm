@@ -1,7 +1,6 @@
 .data 
 V:	.word 		4, -1, 7, 2
 R:	.space		1
-		
 .text
 start:	
 	la $t0, V		# cargamos dir de V (&V) en t0

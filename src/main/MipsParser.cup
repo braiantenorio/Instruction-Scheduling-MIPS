@@ -7,8 +7,13 @@ import java_cup.runtime.*;
 
 parser code {:
 
-
+        List Program = new ArrayList();
+        List immediates = new ArrayList();
         List instructionsList = new ArrayList();
+        List varDeclarationList = new ArrayList();
+
+
+
 
 :}
 
@@ -33,7 +38,7 @@ non terminal List<Line> program;
 non terminal List<Line> data_section;
 non terminal Line var_declaration;
 non terminal List<Line> var_declaration_list;
-non terminal String immediate_list;
+non terminal List<String> immediate_list;
 non terminal List<Line> instructions_and_label_defs;
 non terminal Line instruction_or_label_def;
 non terminal Line instruction;
@@ -42,25 +47,61 @@ start with program;
 
 program ::= data_section:d instructions_and_label_defs:i
                 {: 
-                        RESULT = i; 
+                        List finalProgram = new ArrayList();
+                        finalProgram.add(d);
+                        finalProgram.add(i);
+                        RESULT = finalProgram; 
                 :}
                 ;
 
 /* -------Seccion de datos------- */
-data_section ::=  DOT_DATA var_declaration_list DOT_TEXT 
-                  ;
+data_section ::=        DOT_DATA var_declaration_list:v DOT_TEXT
+                        {:      
+                                List<Line> data = new ArrayList();
+                                data.add(new Line(".data"));
+                                data.addAll(v);
+                                data.add(new Line(".text"));
+                                RESULT = data;
+                        :} 
+                        ;
 
-var_declaration_list ::=  var_declaration_list var_declaration
-                          | 
-                          var_declaration
-                          ;
+var_declaration_list ::=        var_declaration_list var_declaration:v
+                                {:      
+                                        varDeclarationList.add(v);
+                                        RESULT = varDeclarationList;
+                                :}
+                                | 
+                                var_declaration:v
+                                {:      
+                                        varDeclarationList.add(v);
+                                        RESULT = varDeclarationList;
+                                :}
+                                ;
 
-var_declaration ::= LABEL_DEF DATA_TYPE immediate_list;
+var_declaration ::=     LABEL_DEF:l DATA_TYPE:d immediate_list:i
+                        {:      
+                                String inm = "";
+                                for(String s: i){
+                                        inm += String.format("%s, ", s);
+                                } 
+                                inm = inm.substring(0, inm.length() - 2);
 
-immediate_list ::=  IMMEDIATE
-                    | 
-                    immediate_list IMMEDIATE
-                    ;
+                                RESULT = new Line(String.format("%s %s %s", l, d, inm));
+                        :}
+                        ;
+
+immediate_list ::=      IMMEDIATE:i
+                        {:      
+                                immediates.add(i);
+                                RESULT = immediates;
+                        :}
+                        | 
+                        immediate_list IMMEDIATE:i
+                        {:      
+                                immediates.add(i);
+                                RESULT = immediates;
+                        :}
+                        ;
 
 
 /* ------Instrucciones------- */

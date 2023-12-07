@@ -1,9 +1,11 @@
 
 package main;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,13 +38,24 @@ public class Main {
 
             MipsLexer lexer = new MipsLexer(new FileReader(inputFile.getPath()));
             parser p = new parser(lexer);
-            List<Line> result = (List<Line>) p.parse().value;
+            List<List<Line>> result = (List<List<Line>>) p.parse().value;
 
-            List<List<Line>> basicBlocks = getBasicblocks(result);
-            for (List<Line> basicBlock : basicBlocks) {
-                System.out.println(sort(basicBlock));
-                // sort(basicBlock);
+            List<List<Line>> basicBlocks = getBasicblocks(result.get(1));
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File("nuevo.asm")))) {
+                for (Line line : result.get(0)) {
+                        writer.write(line.toString());
+                        writer.newLine();
+                }
 
+                for (List<Line> basicBlock : basicBlocks) {
+                    for (Line line : sort(basicBlock)) {
+                        writer.write(line.toString());
+                        writer.newLine();
+                    }
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
         } catch (Exception e) {
@@ -122,7 +135,7 @@ public class Main {
             }
 
         }
-        return result; // No quedan instrucciones sin dependencias pendientes
+        return result;
     }
 
     /*
@@ -134,6 +147,7 @@ public class Main {
             Instruction lastSelected) {
         Instruction selected = null;
 
+        // Unica instruccion
         if (candidates.size() == 1) {
             System.out.println("Unico candidato: " + candidates.get(0));
             return candidates.get(0);

@@ -24,6 +24,7 @@ public class parser extends java_cup.runtime.lr_parser {
   public parser() {super();}
 
   /** Constructor which sets the default scanner. */
+  @Deprecated
   public parser(java_cup.runtime.Scanner s) {super(s);}
 
   /** Constructor which sets the default scanner. */
@@ -153,8 +154,13 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
-
+        List Program = new ArrayList();
+        List immediates = new ArrayList();
         List instructionsList = new ArrayList();
+        List varDeclarationList = new ArrayList();
+
+
+
 
 
 
@@ -207,7 +213,10 @@ class CUP$parser$actions {
 		int iright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		List<Line> i = (List<Line>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 
-                        RESULT = i; 
+                        List finalProgram = new ArrayList();
+                        finalProgram.add(d);
+                        finalProgram.add(i);
+                        RESULT = finalProgram; 
                 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -217,7 +226,16 @@ class CUP$parser$actions {
           case 2: // data_section ::= DOT_DATA var_declaration_list DOT_TEXT 
             {
               List<Line> RESULT =null;
-
+		int vleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int vright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		List<Line> v = (List<Line>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		      
+                                List<Line> data = new ArrayList();
+                                data.add(new Line(".data"));
+                                data.addAll(v);
+                                data.add(new Line(".text"));
+                                RESULT = data;
+                        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("data_section",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -226,7 +244,13 @@ class CUP$parser$actions {
           case 3: // var_declaration_list ::= var_declaration_list var_declaration 
             {
               List<Line> RESULT =null;
-
+		int vleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int vright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Line v = (Line)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		      
+                                        varDeclarationList.add(v);
+                                        RESULT = varDeclarationList;
+                                
               CUP$parser$result = parser.getSymbolFactory().newSymbol("var_declaration_list",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -235,7 +259,13 @@ class CUP$parser$actions {
           case 4: // var_declaration_list ::= var_declaration 
             {
               List<Line> RESULT =null;
-
+		int vleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int vright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Line v = (Line)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		      
+                                        varDeclarationList.add(v);
+                                        RESULT = varDeclarationList;
+                                
               CUP$parser$result = parser.getSymbolFactory().newSymbol("var_declaration_list",3, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -244,7 +274,24 @@ class CUP$parser$actions {
           case 5: // var_declaration ::= LABEL_DEF DATA_TYPE immediate_list 
             {
               Line RESULT =null;
+		int lleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int lright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String l = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int dleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int dright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Object d = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int ileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		List<String> i = (List<String>)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		      
+                                String inm = "";
+                                for(String s: i){
+                                        inm += String.format("%s, ", s);
+                                } 
+                                inm = inm.substring(0, inm.length() - 2);
 
+                                RESULT = new Line(String.format("%s %s %s", l, d, inm));
+                        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("var_declaration",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -252,8 +299,14 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 6: // immediate_list ::= IMMEDIATE 
             {
-              String RESULT =null;
-
+              List<String> RESULT =null;
+		int ileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String i = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		      
+                                immediates.add(i);
+                                RESULT = immediates;
+                        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("immediate_list",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -261,8 +314,14 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 7: // immediate_list ::= immediate_list IMMEDIATE 
             {
-              String RESULT =null;
-
+              List<String> RESULT =null;
+		int ileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String i = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		      
+                                immediates.add(i);
+                                RESULT = immediates;
+                        
               CUP$parser$result = parser.getSymbolFactory().newSymbol("immediate_list",4, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
