@@ -1,6 +1,7 @@
 .data
 V: .word 4, -1
 .text
+
 main:
 	la $t0, V
 	li $v0, 10

@@ -46,6 +46,8 @@ public class Main {
                         writer.write(line.toString());
                         writer.newLine();
                 }
+                writer.newLine();
+
 
                 for (List<Line> basicBlock : basicBlocks) {
                     for (Line line : sort(basicBlock)) {

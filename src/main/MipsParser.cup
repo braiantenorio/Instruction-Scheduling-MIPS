@@ -12,9 +12,6 @@ parser code {:
         List instructionsList = new ArrayList();
         List varDeclarationList = new ArrayList();
 
-
-
-
 :}
 
 terminal String ROPCODE; 
@@ -45,7 +42,7 @@ non terminal Line instruction;
 
 start with program;
 
-program ::= data_section:d instructions_and_label_defs:i
+program ::= 	data_section:d instructions_and_label_defs:i
                 {: 
                         List finalProgram = new ArrayList();
                         finalProgram.add(d);
@@ -55,28 +52,28 @@ program ::= data_section:d instructions_and_label_defs:i
                 ;
 
 /* -------Seccion de datos------- */
-data_section ::=        DOT_DATA var_declaration_list:v DOT_TEXT
-                        {:      
-                                List<Line> data = new ArrayList();
-                                data.add(new Line(".data"));
-                                data.addAll(v);
-                                data.add(new Line(".text"));
-                                RESULT = data;
-                        :} 
-                        ;
+data_section ::=        	DOT_DATA var_declaration_list:v DOT_TEXT
+							{:      
+									List<Line> data = new ArrayList();
+									data.add(new Line(".data"));
+									data.addAll(v);
+									data.add(new Line(".text"));
+									RESULT = data;
+							:} 
+							;
 
-var_declaration_list ::=        var_declaration_list var_declaration:v
-                                {:      
-                                        varDeclarationList.add(v);
-                                        RESULT = varDeclarationList;
-                                :}
-                                | 
-                                var_declaration:v
-                                {:      
-                                        varDeclarationList.add(v);
-                                        RESULT = varDeclarationList;
-                                :}
-                                ;
+var_declaration_list ::=    var_declaration_list var_declaration:v
+							{:      
+									varDeclarationList.add(v);
+									RESULT = varDeclarationList;
+							:}
+							| 
+							var_declaration:v
+							{:      
+									varDeclarationList.add(v);
+									RESULT = varDeclarationList;
+							:}
+							;
 
 var_declaration ::=     LABEL_DEF:l DATA_TYPE:d immediate_list:i
                         {:      
