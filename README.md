@@ -2,10 +2,24 @@
 
 
 Parado en 
-`cd ~/instructionScheduling/src/main`
+```
 
-`java -jar ../../lib/java-cup-11b.jar MipsParser.cup`
+cd ~/instructionScheduling/src/main
+```
 
-`jflex MipsLexer.flex`
 
-Cambiar `sym` de `class` a `interface`
+para generar el analizador sintactico
+
+```
+java -jar ../../lib/java-cup-11b.jar MipsParser.cup
+```
+
+para generar el analizador lexico
+
+```
+jflex MipsLexer.flex
+
+```
+
+
+Cambiar `sym` de class a interface
