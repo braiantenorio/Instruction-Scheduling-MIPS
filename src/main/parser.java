@@ -161,9 +161,6 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
-
-
-
 /** Cup generated class to encapsulate user supplied action code.*/
 @SuppressWarnings({"rawtypes", "unchecked", "unused"})
 class CUP$parser$actions {
@@ -230,12 +227,12 @@ class CUP$parser$actions {
 		int vright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		List<Line> v = (List<Line>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		      
-                                List<Line> data = new ArrayList();
-                                data.add(new Line(".data"));
-                                data.addAll(v);
-                                data.add(new Line(".text"));
-                                RESULT = data;
-                        
+									List<Line> data = new ArrayList();
+									data.add(new Line(".data"));
+									data.addAll(v);
+									data.add(new Line(".text"));
+									RESULT = data;
+							
               CUP$parser$result = parser.getSymbolFactory().newSymbol("data_section",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -248,9 +245,9 @@ class CUP$parser$actions {
 		int vright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Line v = (Line)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		      
-                                        varDeclarationList.add(v);
-                                        RESULT = varDeclarationList;
-                                
+									varDeclarationList.add(v);
+									RESULT = varDeclarationList;
+							
               CUP$parser$result = parser.getSymbolFactory().newSymbol("var_declaration_list",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -263,9 +260,9 @@ class CUP$parser$actions {
 		int vright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Line v = (Line)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		      
-                                        varDeclarationList.add(v);
-                                        RESULT = varDeclarationList;
-                                
+									varDeclarationList.add(v);
+									RESULT = varDeclarationList;
+							
               CUP$parser$result = parser.getSymbolFactory().newSymbol("var_declaration_list",3, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
