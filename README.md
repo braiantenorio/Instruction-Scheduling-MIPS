@@ -1,12 +1,9 @@
 # Instruction-Scheduling-MIPS
-
-
-Parado en 
+## Instalacion
+Navegar a la carpeta main
 ```
-
 cd ~/instructionScheduling/src/main
 ```
-
 
 para generar el analizador sintactico
 
@@ -18,7 +15,6 @@ para generar el analizador lexico
 
 ```
 jflex MipsLexer.flex
-
 ```
 
 
