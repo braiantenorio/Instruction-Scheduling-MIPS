@@ -1,0 +1,10 @@
+si no esta generado el analizador ni el parser
+
+parado en 
+cd ~/instructionScheduling/src/main
+
+java -jar ../../lib/java-cup-11b.jar MipsParser.cup
+
+jflex MipsLexer.flex
+
+cambiar sym de class a interface
