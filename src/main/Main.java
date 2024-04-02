@@ -27,6 +27,11 @@ import org.jgrapht.alg.shortestpath.AllDirectedPaths;
  * - It has many successors in the graph (may enable successors to be scheduled with greater flexibility)
  * - is as far away as possible (along paths in the DAG) from an instruction which can validly be scheduled last
  * 
+ * 
+ * Bueno habria que tener en cuenta los cortocircuitos, osea que hay que diferenciar entre loads y los demas. 
+ * creo que lw lw y add add, no tienen stall. Pero si lw add
+ * 
+ * 
  */
 
 public class Main {
