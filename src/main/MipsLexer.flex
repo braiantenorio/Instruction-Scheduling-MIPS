@@ -37,11 +37,11 @@ IMMEDIATE = (0|[-+]?[1-9][0-9]*)
 R_INSTRUCTION = ("add"|"sub"|"mul"|"div"|"and"|"or"|"xor"|"nor"|"slt"|"sll"|"srl"|"sra")
  
  /* Immediate instructions */
-I_INSTRUCTION = ("addi"|"subi"|"andi"|"ori"|"xori"|"beq"|"bneq") //deberiamos mover beq y bneq a las de salto
+I_INSTRUCTION = ("addi"|"subi"|"andi"|"ori"|"xori")
 I_MEM_INSTRUCTION = ("lw"|"sw"|"lh"|"sh"|"lb"|"sb")
  
  /* Jump instructions */
-J_INSTRUCTION = ("j"|"jal"|"jr")
+J_INSTRUCTION = ("j"|"jal"|"jr"|"beq"|"bneq"|"bltz")
 
 PS_LA_LI_INSTRUCTION =("li"|"la")
 

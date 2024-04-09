@@ -1,4 +1,3 @@
-
 package main;
 
 import java.io.BufferedWriter;
@@ -11,33 +10,28 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
-
-import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 
-/*
- * Funciona bien pero falta aplicar las otras heristic, en orden.
- * 
+/* 
  * Las heuristic EN ORDEN van a ser 
  *  
  * - It does not interlock with the previously scheduled instruction(avoid stalls)
  * - It has many successors in the graph (may enable successors to be scheduled with greater flexibility)
  * - is as far away as possible (along paths in the DAG) from an instruction which can validly be scheduled last
  * 
- * 
  * Bueno habria que tener en cuenta los cortocircuitos, osea que hay que diferenciar entre loads y los demas. 
  * creo que lw lw y add add, no tienen stall. Pero si lw add
- * 
  * 
  */
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        File inputFile = openFile("src/main/test.asm");
-        // File inputFile = openFile("src/main/ejemplo.asm");
+        // File inputFile = openFile("src/main/test.asm");
+        // File inputFile = openFile("src/main/recursivo.asm");
+        File inputFile = openFile("src/main/ejemplo.asm");
 
         try {
 
@@ -46,14 +40,14 @@ public class Main {
             List<List<Line>> result = (List<List<Line>>) p.parse().value;
 
             List<List<Line>> basicBlocks = getBasicblocks(result.get(1));
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File("nuevo.asm")))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File("result.asm")))) {
                 for (Line line : result.get(0)) {
-                        writer.write(line.toString());
-                        writer.newLine();
+                    writer.write(line.toString());
+                    writer.newLine();
                 }
                 writer.newLine();
 
-
+                System.out.println(basicBlocks);
                 for (List<Line> basicBlock : basicBlocks) {
                     for (Line line : sort(basicBlock)) {
                         writer.write(line.toString());
@@ -71,6 +65,12 @@ public class Main {
 
     }
 
+    /*
+     * Toma los bloques basicos y extre las instrucciones, osea las separa de las
+     * labels y de las instrucciones de salto
+     * 
+     * 
+     */
     private static List<Line> sort(List<Line> basicBlock) {
         LinkedList<Instruction> instructions = new LinkedList<Instruction>();
         for (Line instruction : basicBlock) {
@@ -79,16 +79,20 @@ public class Main {
             }
         }
 
+        // Esto es cuando no se puede ordenar nada y lo devuelve tal cual
         if (instructions.size() <= 2) {
-            return basicBlock; // Esto es cuando no se puede ordenar nada y lo devuelve tal cual
+            return basicBlock;
         }
 
+        // hacemos 2 graph, uno es el que vamos a ir modificando y el otro lo usamos
+        // como referencia para algunas reglas
         Graph<Instruction, DefaultEdge> DAG = DAGBuilder.buildDAG(instructions);
         Graph<Instruction, DefaultEdge> originalDAG = DAGBuilder.buildDAG(instructions);
 
+        // ordena las instrucciones
         List<Instruction> sortedBasicBlock = sortDAG(DAG, originalDAG);
 
-        // reasignamos la lista
+        // reinserta la lista ya ordenada al bloque basico
         int index = 0;
         for (int i = 0; i < basicBlock.size(); i++) {
             if (basicBlock.get(i) instanceof Instruction) {
@@ -105,6 +109,7 @@ public class Main {
         List<Instruction> candidates = new ArrayList<>();
         List<Instruction> possibleLast = new ArrayList<>();
 
+        // elige candidatos por primera vez
         for (Instruction instruction : DAG.vertexSet()) {
             if (DAG.inDegreeOf(instruction) == 0) {
                 candidates.add(instruction);
@@ -118,15 +123,15 @@ public class Main {
             if (!candidates.isEmpty()) {
 
                 Instruction selected = selectNext(candidates, possibleLast, DAG, originalDAG, lastSelected);
+                // si no selecciono ninguno, entonces elige el primero
                 if (selected == null) {
                     selected = candidates.get(0);
-
                 }
 
                 result.add(selected);
                 lastSelected = selected;
                 DAG.removeVertex(selected);
-                candidates.remove(selected);
+                candidates.remove(selected); // TODO: Tiene sentido
 
                 if (possibleLast.contains(selected)) {
                     possibleLast.remove(selected);
@@ -160,8 +165,9 @@ public class Main {
             return candidates.get(0);
         }
         // Primera regla
-        for (Instruction candidate : candidates) { 
-            //aca devuelve el primero que no tenga dependencia, si hay mas de 1, deberiamos dejarlos como candidatos. Como en la segunda regla
+        for (Instruction candidate : candidates) {
+            // aca devuelve el primero que no tenga dependencia, si hay mas de 1, deberiamos
+            // dejarlos como candidatos. Como en la segunda regla
             if (!originalDAG.containsEdge(lastSelected, candidate)) {
                 System.out.println("primera regla, eligiendo: " + candidate);
                 return candidate;
