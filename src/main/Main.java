@@ -47,7 +47,7 @@ public class Main {
                 }
                 writer.newLine();
 
-                System.out.println(basicBlocks);
+                //System.out.println(basicBlocks);
                 for (List<Line> basicBlock : basicBlocks) {
                     for (Line line : sort(basicBlock)) {
                         writer.write(line.toString());
@@ -81,7 +81,7 @@ public class Main {
 
         // Esto es cuando no se puede ordenar nada y lo devuelve tal cual
         if (instructions.size() <= 2) {
-            return basicBlock;
+            return basicBlock; //TODO: A revisar
         }
 
         // hacemos 2 graph, uno es el que vamos a ir modificando y el otro lo usamos
@@ -131,7 +131,7 @@ public class Main {
                 result.add(selected);
                 lastSelected = selected;
                 DAG.removeVertex(selected);
-                candidates.remove(selected); // TODO: Tiene sentido
+                candidates.remove(selected); // TODO: Tiene sentido?
 
                 if (possibleLast.contains(selected)) {
                     possibleLast.remove(selected);
@@ -165,6 +165,7 @@ public class Main {
             return candidates.get(0);
         }
         // Primera regla
+        // TODO: Si pasa esta regla deberiamos eliminar si generan conflicto, osea para que luego no lo elija en la segunda regla
         for (Instruction candidate : candidates) {
             // aca devuelve el primero que no tenga dependencia, si hay mas de 1, deberiamos
             // dejarlos como candidatos. Como en la segunda regla
@@ -232,8 +233,7 @@ public class Main {
      * que es cuestion de eliminarlas
      */
     private static List<List<Line>> getBasicblocks(List<Line> program) {
-        List<List<Line>> result = new LinkedList<>(); // ahora lo cambiamos a linked list por que luego es mas facil
-                                                      // insertar listas xd
+        List<List<Line>> result = new LinkedList<>(); 
         Iterator<Line> it = program.iterator();
         it.next();
         int firstIndex = 0;

@@ -1,6 +1,5 @@
 package main;
 
-
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleDirectedGraph;
@@ -16,26 +15,27 @@ public class DAGBuilder {
         }
 
         // Agregar arcos basados en dependencias RAW, WAR y WAW
+        // recorre todas las posibilidades
         for (int i = 0; i < instructions.size(); i++) {
             for (int j = i + 1; j < instructions.size(); j++) {
                 Instruction instI = instructions.get(i);
                 Instruction instJ = instructions.get(j);
 
-                // Dependencia RAW (Read After Write)
+                // Dependencia RAW 
                 for (String writeRegister : instI.getWriteRegisters()) {
                     if (instJ.getReadRegisters().contains(writeRegister)) {
                         DAG.addEdge(instI, instJ);
                     }
                 }
 
-                // Dependencia WAR (Write After Read)
+                // Dependencia WAR 
                 for (String readRegister : instI.getReadRegisters()) {
                     if (instJ.getWriteRegisters().contains(readRegister)) {
                         DAG.addEdge(instI, instJ);
                     }
                 }
 
-                // Dependencia WAW (Write After Write)
+                // Dependencia WAW 
                 for (String writeRegister : instI.getWriteRegisters()) {
                     if (instJ.getWriteRegisters().contains(writeRegister)) {
                         DAG.addEdge(instI, instJ);
