@@ -1,9 +1,10 @@
 .data
-V:	.word 		4, -1, 7, 2
-.text
+msg1: .asciiz "Inserte un numero: "
 
-start:
-	li $v0,  4
+.text
+.globl main
+main :
+	li $v0,  4		# codigo para imprimir  el string en $a0
 	la $a0,  msg1
 	syscall
     li $v0, 5

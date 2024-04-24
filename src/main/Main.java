@@ -16,11 +16,11 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 
 /* 
- * Las heuristic EN ORDEN van a ser 
+ * Las heuristics EN ORDEN van a ser 
  *  
- * - It does not interlock with the previously scheduled instruction(avoid stalls)
- * - It has many successors in the graph (may enable successors to be scheduled with greater flexibility)
- * - is as far away as possible (along paths in the DAG) from an instruction which can validly be scheduled last
+ * - It does not interlock with the previously scheduled instruction.
+ * - It has many successors in the graph (may enable successors to be scheduled with greater flexibility).
+ * - is as far away as possible (along paths in the DAG) from an instruction which can validly be scheduled last.
  * 
  * Bueno habria que tener en cuenta los cortocircuitos, osea que hay que diferenciar entre loads y los demas. 
  * creo que lw lw y add add, no tienen stall. Pero si lw add
@@ -31,7 +31,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         // File inputFile = openFile("src/main/test.asm");
         // File inputFile = openFile("src/main/recursivo.asm");
-        File inputFile = openFile("src/main/ejemplo.asm");
+        File inputFile = openFile("src/main/ejemplo_basico.asm");
 
         try {
 
@@ -81,11 +81,10 @@ public class Main {
 
         // Esto es cuando no se puede ordenar nada y lo devuelve tal cual
         if (instructions.size() <= 2) {
-            return basicBlock; //TODO: A revisar
+            return basicBlock; 
         }
 
-        // hacemos 2 graph, uno es el que vamos a ir modificando y el otro lo usamos
-        // como referencia para algunas reglas
+        // hacemos 2 graph, uno es el que vamos a ir modificando y el otro lo usamos como referencia para algunas reglas
         Graph<Instruction, DefaultEdge> DAG = DAGBuilder.buildDAG(instructions);
         Graph<Instruction, DefaultEdge> originalDAG = DAGBuilder.buildDAG(instructions);
 
@@ -166,6 +165,10 @@ public class Main {
         }
         // Primera regla
         // TODO: Si pasa esta regla deberiamos eliminar si generan conflicto, osea para que luego no lo elija en la segunda regla
+
+        // ? como en la regla 2, hacemos lista de boolean, recorremos los candidatos verificando si tienen conflicto, si no tienen
+        // los agregamos a la lista. Luego vemos si devolvemos o pasamos a la prox
+        // lo mismo en la tercer regla xd
         for (Instruction candidate : candidates) {
             // aca devuelve el primero que no tenga dependencia, si hay mas de 1, deberiamos
             // dejarlos como candidatos. Como en la segunda regla
@@ -187,21 +190,21 @@ public class Main {
             }
         }
 
-        List<Instruction> toRemove = new ArrayList<>();
+        List<Instruction> toRemoveSecondRule = new ArrayList<>();
         for (int j = 0; j < outDegrees.size(); j++) {
             if (outDegrees.get(j) != maxOutDegree) {
-                toRemove.add(candidates.get(j));
+                toRemoveSecondRule.add(candidates.get(j));
             }
         }
 
-        if (toRemove.size() == candidates.size() - 1) {
+        if (toRemoveSecondRule.size() == candidates.size() - 1) {
             System.out.println("segunda regla, eligiendo: " + aCandidate);
             return aCandidate;
         } else {
-            candidates.removeAll(toRemove);
+            candidates.removeAll(toRemoveSecondRule);
         }
 
-        // tercer regla
+        // Tercer regla
         AllDirectedPaths<Instruction, DefaultEdge> allPaths = new AllDirectedPaths<Instruction, DefaultEdge>(
                 DAG);
         int max = 0;

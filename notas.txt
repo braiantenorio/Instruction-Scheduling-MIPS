@@ -24,3 +24,9 @@ Creo que puede funcionar
 IMPORTANTE
 si hay dependencia entre syscall y el $v0 pero en realidad si lo tengo como delimitador del sycall, nunca podria cambiarse la logica
 por que de hecho el syscall no entra en el 
+
+- Terminar programa
+	- Modificar regla 1
+	- Quitar de canditatos los que no cumplan con las heurisctics
+	- Probar ejemplos y corregir en funcion
+	- (Si hay tiempo) Mejorar comentarios
