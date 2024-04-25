@@ -29,9 +29,11 @@ import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        // File inputFile = openFile("src/main/test.asm");
-        // File inputFile = openFile("src/main/recursivo.asm");
-        File inputFile = openFile("src/main/ejemplo_basico.asm");
+        File inputFile = openFile("src/main/ejemplo_basico2.asm");
+        //File inputFile = openFile("src/main/ejemplo_basico.asm");
+        //File inputFile = openFile("src/main/sumatoria_recursiva.asm");
+        //File inputFile = openFile("src/main/sumatoria_vector.asm");
+
 
         try {
 
@@ -47,7 +49,14 @@ public class Main {
                 }
                 writer.newLine();
 
-                //System.out.println(basicBlocks);
+                System.out.println("Bloques basicos:");
+
+                for (List<Line> basicBlock : basicBlocks) {
+                    System.out.println(basicBlock);
+                }
+
+                System.out.println("---------------------------");
+
                 for (List<Line> basicBlock : basicBlocks) {
                     for (Line line : sort(basicBlock)) {
                         writer.write(line.toString());
@@ -81,10 +90,11 @@ public class Main {
 
         // Esto es cuando no se puede ordenar nada y lo devuelve tal cual
         if (instructions.size() <= 2) {
-            return basicBlock; 
+            return basicBlock;
         }
 
-        // hacemos 2 graph, uno es el que vamos a ir modificando y el otro lo usamos como referencia para algunas reglas
+        // hacemos 2 graph, uno es el que vamos a ir modificando y el otro lo usamos
+        // como referencia para algunas reglas
         Graph<Instruction, DefaultEdge> DAG = DAGBuilder.buildDAG(instructions);
         Graph<Instruction, DefaultEdge> originalDAG = DAGBuilder.buildDAG(instructions);
 
@@ -114,6 +124,7 @@ public class Main {
                 candidates.add(instruction);
             } else if (DAG.outDegreeOf(instruction) == 0) {
                 possibleLast.add(instruction);
+                System.out.println("posible ultimo: " + instruction);
             }
         }
 
@@ -121,11 +132,14 @@ public class Main {
         while (DAG.vertexSet().size() != 0) {
             if (!candidates.isEmpty()) {
 
+                System.out.println("Candidatos: " + candidates);
                 Instruction selected = selectNext(candidates, possibleLast, DAG, originalDAG, lastSelected);
                 // si no selecciono ninguno, entonces elige el primero
                 if (selected == null) {
+                    System.out.println("Elección default: "+ candidates.get(0));
                     selected = candidates.get(0);
                 }
+                System.out.println("---------------------------------------");
 
                 result.add(selected);
                 lastSelected = selected;
@@ -156,6 +170,9 @@ public class Main {
     private static Instruction selectNext(List<Instruction> candidates, List<Instruction> possibleLast,
             Graph<Instruction, DefaultEdge> DAG, Graph<Instruction, DefaultEdge> originalDAG,
             Instruction lastSelected) {
+        
+
+        AluOps aluops = new AluOps();
         Instruction selected = null;
 
         // Unica instruccion
@@ -163,20 +180,30 @@ public class Main {
             System.out.println("Unico candidato: " + candidates.get(0));
             return candidates.get(0);
         }
-        // Primera regla
-        // TODO: Si pasa esta regla deberiamos eliminar si generan conflicto, osea para que luego no lo elija en la segunda regla
 
-        // ? como en la regla 2, hacemos lista de boolean, recorremos los candidatos verificando si tienen conflicto, si no tienen
-        // los agregamos a la lista. Luego vemos si devolvemos o pasamos a la prox
-        // lo mismo en la tercer regla xd
+        // Primera regla
+        List<Instruction> toRemoveFirstRule = new ArrayList<>();
+
         for (Instruction candidate : candidates) {
-            // aca devuelve el primero que no tenga dependencia, si hay mas de 1, deberiamos
-            // dejarlos como candidatos. Como en la segunda regla
-            if (!originalDAG.containsEdge(lastSelected, candidate)) {
-                System.out.println("primera regla, eligiendo: " + candidate);
-                return candidate;
+            if (originalDAG.containsEdge(lastSelected, candidate)) { //TODO: mejorar?
+                if (lastSelected.getOpcode() == "lw" && aluops.list.contains(candidate.getOpcode())) { //TODO: este if hay que revisarlo
+                    toRemoveFirstRule.add(candidate);
+                }
             }
         }
+
+        if (!toRemoveFirstRule.isEmpty()) {
+            System.out.println(toRemoveFirstRule.size());;
+            candidates.removeAll(toRemoveFirstRule);
+        }
+
+        // Si solo quedo una instruccion, la devuelve
+        if (candidates.size() == 1) {
+            System.out.println("primera regla, eligiendo: " + candidates.get(0));
+            return candidates.get(0);
+        }
+
+        //System.out.println("Despues de primera regla: " + candidates);
 
         // Segunda regla
         int maxOutDegree = 0;
@@ -186,7 +213,7 @@ public class Main {
             outDegrees.add(DAG.outDegreeOf(candidate));
             if (DAG.outDegreeOf(candidate) > maxOutDegree) {
                 maxOutDegree = DAG.outDegreeOf(candidate);
-                aCandidate = candidate;
+                aCandidate = candidate; // Candidato provisorio
             }
         }
 
@@ -204,30 +231,58 @@ public class Main {
             candidates.removeAll(toRemoveSecondRule);
         }
 
+        //System.out.println("Despues de segunda regla: " + candidates);
+
         // Tercer regla
+        List<Instruction> toRemoveThirdRule = new ArrayList<>();
         AllDirectedPaths<Instruction, DefaultEdge> allPaths = new AllDirectedPaths<Instruction, DefaultEdge>(
                 DAG);
         int max = 0;
+        // busca el tamaño del camino mas largo
         for (Instruction candidate : candidates) {
             for (Instruction last : possibleLast) {
                 List<GraphPath<Instruction, DefaultEdge>> paths = allPaths.getAllPaths(candidate, last, true,
                         DAG.vertexSet().size());
-                if (paths.isEmpty()) // esta mal, no deberia romper el for, deberia solo saltear esta partecita
-                                     // siguiente
-                    break;
-
                 for (GraphPath<Instruction, DefaultEdge> path : paths) {
                     if (path.getLength() > max) {
                         max = path.getLength();
-                        selected = candidate;
                     }
                 }
 
             }
         }
-        System.out.println("tercera regla eligiendo: " + selected);
-        ;
-        return selected;
+
+        //si algun candidato tiene un camino menor al max, lo agrega a los que removemos de los candidatos
+        for (Instruction candidate : candidates) {
+            for (Instruction last : possibleLast) {
+                List<GraphPath<Instruction, DefaultEdge>> paths = allPaths.getAllPaths(candidate, last, true,
+                        DAG.vertexSet().size());
+                for (GraphPath<Instruction, DefaultEdge> path : paths) {
+                    if (path.getLength() < max) {
+                        if (!toRemoveThirdRule.contains(candidate)) {
+                            toRemoveThirdRule.add(candidate);
+                        }
+                    }
+                }
+
+            }
+        }
+
+        if (!toRemoveThirdRule.isEmpty()) {
+            System.out.println(toRemoveFirstRule.size());;
+            candidates.removeAll(toRemoveFirstRule);
+        }
+        
+        if (candidates.size()==1) {
+            System.out.println("tercera regla eligiendo: " + candidates.get(0));
+            return candidates.get(0);
+
+        }
+        
+
+
+
+        return null;
 
     }
 
@@ -236,7 +291,7 @@ public class Main {
      * que es cuestion de eliminarlas
      */
     private static List<List<Line>> getBasicblocks(List<Line> program) {
-        List<List<Line>> result = new LinkedList<>(); 
+        List<List<Line>> result = new LinkedList<>();
         Iterator<Line> it = program.iterator();
         it.next();
         int firstIndex = 0;
