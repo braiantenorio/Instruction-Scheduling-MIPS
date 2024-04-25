@@ -1,22 +1,15 @@
 .data
-V: .word 4, -1, 7, 2
-R: .space 4, -1, 7, 2, 1
+V: .word 4, -1
 .text
 
-start:
+main:
 	la $t0, V
-	la $t1, R
-	li $t2, 4
-	li $t4, 1
-loop:
-	beqz $t2, fin_loop
-	lw $t3, 0($t0)
-	slt $t4, $t3, $zero
-	beqz $t4, fin_loop
-	addi $t0, $t0, 4
-	addi $t2, $t2, -1
-	j loop
-fin_loop:
-	sw $t4, 0($t1)
-	addi $v0, $zero, 10
+	lw $t1, 0($t0)
+	lw $t2, 4($t0)
+	lw $t4, 8($t0)
+	add $t3, $t1, $t2
+	sw $t3, 12($t0)
+	add $t3, $t1, $t4
+	sw $t3, 16($t0)
+	li $v0, 10
 	syscall

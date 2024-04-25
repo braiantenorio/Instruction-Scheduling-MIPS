@@ -1,17 +1,26 @@
-.data
-V:	.word 		4, -1
+.data 
+V:	.word 		4, -1, 7, 2
+R:	.space		1
 .text
-main:
-    la $t0, V		# cargamos dir de V (&V) en t0
-
-    lw $t1, 0($t0)    # Cargar el contenido de la direcci�n de memoria 0 en el registro $1
-    lw $t2, 4($t0)   # Cargar el contenido de la direcci�n de memoria 4 en el registro $2
-    add $t3, $t1, $t2  # Sumar los contenidos de $1 y $2 y almacenar el resultado en $3
-    sw $t3, 12($t0)   # Almacenar el contenido de $3 en la direcci�n de memoria 12
-
-    lw $t4, 8($t0)    # Cargar el contenido de la direcci�n de memoria 8 en el registro $4
-    add $t3, $t1, $t4  # Sumar los contenidos de $1 y $4 y almacenar el resultado en $3
-    sw $t3, 16($t0)   # Almacenar el contenido de $3 en la direcci�n de memoria 16
-
-    li $v0, 10       # Cargar el c�digo de la llamada al sistema para salir del programa
-    syscall         # Realizar la llamada al sistema
+start:
+	la $t0, V		# cargamos dir de V (&V) en t0
+	la $t1, R		# cargamos dir de R (&R) en t1
+			
+	li $t2, 4		# indico cantidad de elementos de V
+	li $t4, 1
+loop:
+	beqz $t2, fin_loop 	# finaliza loop cuando t2 == 0
+	lw $t3, 0($t0)		# t3 <- V[i]
+				
+	slt $t4, $t3, $zero	# t4 <- (t3 < 0)
+	beqz $t4, fin_loop	# si t4 es falso, sale del loop
+				
+	addi $t0, $t0, 4	# &V <- &V + 4
+	addi $t2, $t2, -1	# --t2
+	j loop			# salta a loop
+fin_loop:
+				
+	sw $t4, 0($t1)		# guardamos el resultado en memoria
+				
+	addi $v0, $zero, 10
+	syscall			# fin de programa

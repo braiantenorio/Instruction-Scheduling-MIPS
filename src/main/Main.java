@@ -29,11 +29,8 @@ import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        File inputFile = openFile("src/main/ejemplo_basico2.asm");
         //File inputFile = openFile("src/main/ejemplo_basico.asm");
-        //File inputFile = openFile("src/main/sumatoria_recursiva.asm");
-        //File inputFile = openFile("src/main/sumatoria_vector.asm");
-
+        File inputFile = openFile("src/main/ejemplo_informe.asm");
 
         try {
 
@@ -124,7 +121,7 @@ public class Main {
                 candidates.add(instruction);
             } else if (DAG.outDegreeOf(instruction) == 0) {
                 possibleLast.add(instruction);
-                System.out.println("posible ultimo: " + instruction);
+                //System.out.println("posible ultimo: " + instruction);
             }
         }
 
@@ -186,14 +183,17 @@ public class Main {
 
         for (Instruction candidate : candidates) {
             if (originalDAG.containsEdge(lastSelected, candidate)) { //TODO: mejorar?
-                if (lastSelected.getOpcode() == "lw" && aluops.list.contains(candidate.getOpcode())) { //TODO: este if hay que revisarlo
+                //System.out.println("si?: " + candidate);
+                //System.out.println(aluops.list.contains(candidate.getOpcode()));
+                //System.out.println(lastSelected.getOpcode());
+                if (lastSelected.getOpcode().equals("lw") && aluops.list.contains(candidate.getOpcode())) { //TODO: este if hay que revisarlo
                     toRemoveFirstRule.add(candidate);
                 }
             }
         }
 
         if (!toRemoveFirstRule.isEmpty()) {
-            System.out.println(toRemoveFirstRule.size());;
+            //System.out.println(toRemoveFirstRule.size());;
             candidates.removeAll(toRemoveFirstRule);
         }
 
@@ -234,7 +234,7 @@ public class Main {
         //System.out.println("Despues de segunda regla: " + candidates);
 
         // Tercer regla
-        List<Instruction> toRemoveThirdRule = new ArrayList<>();
+        List<Instruction> thirdRuleGoods = new ArrayList<>();
         AllDirectedPaths<Instruction, DefaultEdge> allPaths = new AllDirectedPaths<Instruction, DefaultEdge>(
                 DAG);
         int max = 0;
@@ -258,9 +258,9 @@ public class Main {
                 List<GraphPath<Instruction, DefaultEdge>> paths = allPaths.getAllPaths(candidate, last, true,
                         DAG.vertexSet().size());
                 for (GraphPath<Instruction, DefaultEdge> path : paths) {
-                    if (path.getLength() < max) {
-                        if (!toRemoveThirdRule.contains(candidate)) {
-                            toRemoveThirdRule.add(candidate);
+                    if (path.getLength() == max) {
+                        if (!thirdRuleGoods.contains(candidate)) {
+                            thirdRuleGoods.add(candidate);
                         }
                     }
                 }
@@ -268,15 +268,17 @@ public class Main {
             }
         }
 
-        if (!toRemoveThirdRule.isEmpty()) {
-            System.out.println(toRemoveFirstRule.size());;
-            candidates.removeAll(toRemoveFirstRule);
+
+        //System.out.println("a ver : " + candidates);
+        //System.out.println("a ver 2 : " + thirdRuleGoods);
+
+        if (!thirdRuleGoods.isEmpty()) {
+            candidates = thirdRuleGoods;
         }
         
         if (candidates.size()==1) {
             System.out.println("tercera regla eligiendo: " + candidates.get(0));
             return candidates.get(0);
-
         }
         
 

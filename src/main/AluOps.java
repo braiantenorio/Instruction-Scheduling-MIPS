@@ -8,5 +8,16 @@ public class AluOps {
 
     public AluOps() {
         list.add("add");
+        list.add("addi");
+        list.add("sub");
+        list.add("mult");
+        list.add("div");
+        list.add("and");
+        list.add("nor");
+        list.add("xor");
+        list.add("or");
+        list.add("andi");
+        list.add("ori");
+        list.add("xori");
     }
 }
